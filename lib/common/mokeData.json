@@ -1,0 +1,52 @@
+{
+    "GetParkInfo": {
+        "list_total_count": 82,
+        "RESULT": {
+            "CODE": "INFO-000",
+            "MESSAGE": "정상 처리되었습니다"
+        },
+        "row": [
+            {
+                "PARKING_NAME": "대림운동장(구)",
+                "ADDR": "영등포구 대림동 780-0",
+                "PARKING_CODE": "1025697",
+                "PARKING_TYPE": "NW",
+                "PARKING_TYPE_NM": "노외 주차장",
+                "OPERATION_RULE": "1",
+                "OPERATION_RULE_NM": "시간제 주차장",
+                "TEL": "02-2677-1401",
+                "CAPACITY": 192.0,
+                "PAY_YN": "Y",
+                "PAY_NM": "유료",
+                "NIGHT_FREE_OPEN": "N",
+                "NIGHT_FREE_OPEN_NM": "야간 미개방",
+                "WEEKDAY_BEGIN_TIME": "0000",
+                "WEEKDAY_END_TIME": "2400",
+                "WEEKEND_BEGIN_TIME": "0000",
+                "WEEKEND_END_TIME": "2400",
+                "HOLIDAY_BEGIN_TIME": "0000",
+                "HOLIDAY_END_TIME": "2400",
+                "SYNC_TIME": "2020-08-11 17:44:08",
+                "SATURDAY_PAY_YN": "N",
+                "SATURDAY_PAY_NM": "무료",
+                "HOLIDAY_PAY_YN": "N",
+                "HOLIDAY_PAY_NM": "무료",
+                "FULLTIME_MONTHLY": "65000",
+                "GRP_PARKNM": "",
+                "RATES": 50.0,
+                "TIME_RATE": 5.0,
+                "ADD_RATES": 50.0,
+                "ADD_TIME_RATE": 5.0,
+                "BUS_RATES": 0.0,
+                "BUS_TIME_RATE": 0.0,
+                "BUS_ADD_TIME_RATE": 0.0,
+                "BUS_ADD_RATES": 0.0,
+                "DAY_MAXIMUM": 0.0,
+                "LAT": 37.49965667,
+                "LNG": 126.89483844,
+                "ASSIGN_CODE": "PIS02",
+                "ASSIGN_CODE_NM": "미배정,미점유"
+            }
+        ]
+    }
+}

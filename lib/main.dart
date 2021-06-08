@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'common/baseBlocObserver.dart';
+import 'page/homePage/homePage.dart';
 
-import 'page/homePage/widget/home.dart';
-
-void main() => runApp(MyApp());
+void main() {
+  Bloc.observer = BaseBlocObserver();
+  return runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -13,7 +17,7 @@ class MyApp extends StatelessWidget {
           appBar: AppBar(
             title: Text('Material App Bar'),
           ),
-          body: Home()),
+          body: HomePage()),
     );
   }
 }
