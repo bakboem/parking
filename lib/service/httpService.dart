@@ -18,15 +18,33 @@ class HttpService {
   HttpService.init() {
     _dio.interceptors
         .add(InterceptorsWrapper(onRequest: (option, handle) async {
+      if (option.method == 'POST') {
+        Token token = await getToken();
+        if (token.token != null) {
+          option.headers.putIfAbsent('Authorization', () => token.token);
+        }
+      }
       handle.next(option);
     }, onResponse: (res, handle) async {
+      String authToken = res.headers.value('Authorization')!;
+      if (authToken.isNotEmpty) {
+        await setToken(authToken);
+      }
       handle.next(res);
     }, onError: (error, handle) async {
+      if (error.type == DioErrorType.sendTimeout ||
+          error.type == DioErrorType.connectTimeout) {
+        await checkNetWork();
+      }
+      if (error.type == DioErrorType.other ||
+          error.type == DioErrorType.response) {
+        await handleErrorMassage();
+      }
       handle.next(error);
     }));
   }
 
-  Future setToken(String token) async =>
+  Future<void> setToken(String token) async =>
       CacheService().setToken(token: Token(token: token));
   Future<Token> getToken() async => await CacheService().getToken();
   Future<void> checkNetWork() async {}
