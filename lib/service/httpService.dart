@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:parking/model/parkingModel/getParkingInfo.dart';
+import 'package:parking/api/tokenApi.dart';
 import 'package:parking/model/tokenModel/token.dart';
 import 'package:parking/service/cacheService.dart';
 
@@ -19,16 +19,21 @@ class HttpService {
     _dio.interceptors
         .add(InterceptorsWrapper(onRequest: (option, handle) async {
       if (option.method == 'POST') {
-        Token token = await getToken();
-        if (token.token != null) {
-          option.headers.putIfAbsent('Authorization', () => token.token);
+        bool expired = await TokenApi().checkTokenExpired();
+        if (expired) {
+          await TokenApi().refreshToken().then((refreshSuccess) {
+            if (refreshSuccess) {
+              CacheService().setToken(token: TokenApi().token);
+            }
+          });
         }
       }
       handle.next(option);
     }, onResponse: (res, handle) async {
-      String authToken = res.headers.value('Authorization')!;
-      if (authToken.isNotEmpty) {
-        await setToken(authToken);
+      if (res.headers.value('Authorization') != null) {
+        String authToken = res.headers.value('Authorization')!;
+        await TokenApi().setToken(Token(token: authToken));
+        await setToken(TokenApi().token);
       }
       handle.next(res);
     }, onError: (error, handle) async {

@@ -12,14 +12,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   getToken() async {
-    await CacheService().deleteToken();
+    // await CacheService().deleteToken();
     await CacheService().setToken(token: Token(token: 'baifan'));
     var a = await CacheService().getToken();
     print('token :${a.token}');
   }
 
   getParkingData() async {
-    await ParkingApi().data(startRange: 1, endRange: 20);
+    await ParkingApi().data('', startRange: 1, endRange: 20);
   }
 
   @override
