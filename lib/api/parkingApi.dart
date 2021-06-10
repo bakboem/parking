@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:parking/api/baseApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
@@ -23,7 +21,7 @@ class ParkingApi extends BaseApi {
   HttpService httpService = HttpService();
   CacheService cacheService = CacheService();
   CacheObjectService cacheObjectService = CacheObjectService();
-  GetParkingInfo? _parkingInfo = GetParkingInfo(dataList: []);
+  GetParkingInfo? _parkingInfo;
   static const baseUrl = 'http://openapi.seoul.go.kr:8088';
   static const apiKey = '54744f4462636e62353146794f4649';
   static const dataType = 'json';
@@ -33,36 +31,22 @@ class ParkingApi extends BaseApi {
   int? startRange;
   int? endRange;
   int? pageSize = 30;
-  GetParkingInfo cache = GetParkingInfo();
+  GetParkingInfo? cache;
   //지정 값만 넣어주면 data 호출.
   Future<GetParkingInfo> requestdata(
     String search,
   ) async {
-    Response response = await httpService.getData(
-      url: '$parkingUrl/$startRange/$endRange/$search',
-    );
-    if (response.statusCode == 200) {
-      if (response.data['RESULT'] == null) {
-        _parkingInfo = GetParkingInfo.fromJson(response.data['GetParkInfo']);
-
-        if (search == '' || search.isEmpty) {
-          // await cacheService.saveParking(parkingInfo: _parkingInfo!);
-          await cacheObjectService.saveData<String>(
-              _parkingInfo.runtimeType.toString(),
-              jsonEncode(_parkingInfo!.toJson()));
-        } else {
-          // await cacheService.saveSearchParking(
-          //     parkingInfo: _parkingInfo!, searchKey: search);
-
-          await cacheObjectService.saveData<String>(
-              _parkingInfo.runtimeType.toString(),
-              jsonEncode(_parkingInfo!.toJson()));
+    try {
+      Response response = await httpService.getData(
+        url: '$parkingUrl/$startRange/$endRange/$search',
+      );
+      if (response.statusCode == 200) {
+        if (response.data['GetParkInfo'] != null) {
+          _parkingInfo = GetParkingInfo.fromJson(response.data['GetParkInfo']);
         }
-      } else {
-        _parkingInfo = GetParkingInfo(dataList: []);
       }
-    } else {
-      _parkingInfo = GetParkingInfo(dataList: []);
+    } catch (e) {
+      print(e);
     }
     return _parkingInfo!;
   }
@@ -77,19 +61,41 @@ class ParkingApi extends BaseApi {
     endRange = endRange! + pageSize!;
   }
 
-  resetpage() => initPage();
-
-  updatedata({required dynamic data}) async {
-    var newData = data as GetParkingInfo;
-    // print('sssssssss${cache.dataList!.length}');
-    cache.result = newData.result;
-    cache.total = newData.total;
+  updatedata(newData) async {
+    if (cache == null) {
+      print('null??????');
+      print('null??????');
+      print('null??????');
+      print('null??????');
+      print('null??????');
+      print('null??????');
+      print('null??????');
+      print('null??????');
+      cache = newData;
+    } else {
+      print('not null');
+      print('not null');
+      print('not null');
+      print('not null');
+      print('not null');
+      print('not null');
+      cache as GetParkingInfo;
+      newData as GetParkingInfo;
+      cache!.dataList!.addAll(newData.dataList!);
+    }
     return cache;
   }
 
+  resetpage() => initPage();
+
   @override
-  requestData(String search) {
-    return this.requestdata(search);
+  requestData(String search) async {
+    return await this.requestdata(search);
+  }
+
+  @override
+  updateData({required dynamic newData}) async {
+    return await this.updatedata(newData);
   }
 
   @override
@@ -100,11 +106,6 @@ class ParkingApi extends BaseApi {
   @override
   initPage() {
     return this.initpage();
-  }
-
-  @override
-  updateData({required data}) {
-    return this.updatedata(data: data);
   }
 
   @override
