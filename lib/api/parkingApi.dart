@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:parking/api/baseApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
@@ -27,54 +29,74 @@ class ParkingApi extends BaseApi {
   static const dataType = 'json';
   static const keyWord = 'GetParkInfo';
   static const parkingUrl = '$baseUrl/$apiKey/$dataType/$keyWord';
+
+  int? startRange;
+  int? endRange;
+  int? pageSize = 30;
   //지정 값만 넣어주면 data 호출.
-  Future<GetParkingInfo> data(String search,
-      {required int startRange, required int endRange}) async {
+  Future<GetParkingInfo> data(
+    String search,
+  ) async {
     Response response = await httpService.getData(
       url: '$parkingUrl/$startRange/$endRange/$search',
     );
     if (response.statusCode == 200) {
-      _parkingInfo = GetParkingInfo.fromJson(response.data['GetParkInfo']);
+      if (response.data['RESULT'] == null) {
+        _parkingInfo = GetParkingInfo.fromJson(response.data['GetParkInfo']);
+
+        if (search == '' || search.isEmpty) {
+          // await cacheService.saveParking(parkingInfo: _parkingInfo!);
+          await cacheObjectService.saveData<String>(
+              _parkingInfo.runtimeType.toString(),
+              jsonEncode(_parkingInfo!.toJson()));
+        } else {
+          // await cacheService.saveSearchParking(
+          //     parkingInfo: _parkingInfo!, searchKey: search);
+
+          await cacheObjectService.saveData<String>(
+              _parkingInfo.runtimeType.toString(),
+              jsonEncode(_parkingInfo!.toJson()));
+        }
+      } else {
+        _parkingInfo = GetParkingInfo(dataList: []);
+      }
     } else {
-      _parkingInfo = GetParkingInfo();
+      _parkingInfo = GetParkingInfo(dataList: []);
     }
     return _parkingInfo!;
   }
 
+  initpage() {
+    startRange = 0;
+    endRange = pageSize;
+  }
+
+  updatepage() {
+    startRange = endRange! + 1;
+    endRange = endRange! + pageSize!;
+  }
+
+  resetpage() {
+    initpage();
+  }
+
   @override
-  getData(
-      {required String search,
-      required int startRange,
-      required int endRange}) {
-    // TODO: implement getData
-    return this.data(search, startRange: startRange, endRange: endRange);
+  getData(String search) {
+    return this.data(search);
+  }
+
+  @override
+  updatePage() {
+    return this.updatepage();
+  }
+
+  @override
+  initPage() {
+    return this.initpage();
+  }
+
+  @override
+  resetPage() {
+    return this.resetpage();
   }
 }
-
-//  // openApi 서버에서 오류시 result[code:xxx , message:xxx ]으로 response 됨.
-//       if (response.data['RESULT'] == null) {
-//         _parkingInfo = GetParkingInfo.fromJson(response.data['GetParkInfo']);
-
-//         if (search == '' || search.isEmpty) {
-//           await cacheService.saveParking(parkingInfo: _parkingInfo!);
-//           await cacheObjectService.saveData<String>(
-//               _parkingInfo.runtimeType.toString(),
-//               jsonEncode(_parkingInfo!.toJson()));
-
-//           var a = await cacheObjectService
-//               .getData<String>(_parkingInfo.runtimeType.toString());
-//           print(GetParkingInfo.fromJson(jsonDecode(a)).result!.message);
-//           print(GetParkingInfo.fromJson(jsonDecode(a)).result!.message);
-//           print(GetParkingInfo.fromJson(jsonDecode(a)).result!.message);
-//           print(GetParkingInfo.fromJson(jsonDecode(a)).result!.message);
-//         } else {
-//           await cacheService.saveSearchParking(
-//               parkingInfo: _parkingInfo!, searchKey: search);
-
-//           await cacheObjectService.saveData<String>(
-//               _parkingInfo.runtimeType.toString(),
-//               jsonEncode(_parkingInfo!.toJson()));
-//         }
-//       } else {
-//         _parkingInfo = GetParkingInfo();
-//       }

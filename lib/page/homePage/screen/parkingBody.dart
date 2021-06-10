@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
 
+// ignore: must_be_immutable
 class ParkingBody extends StatelessWidget {
   GetParkingInfo? parkingInfo;
   final ScrollController _scrollController = ScrollController();
@@ -18,6 +19,7 @@ class ParkingBody extends StatelessWidget {
             Scaffold.of(context)
                 .showBottomSheet((context) => Text(state.message));
           } else if (state is SuccessState<GetParkingInfo> &&
+              // ignore: unnecessary_null_comparison
               state.data == null) {
             Scaffold.of(context)
                 .showBottomSheet((context) => Text('no more data'));
@@ -48,7 +50,7 @@ class ParkingBody extends StatelessWidget {
                   onPressed: () {
                     context.read()<PaginationBloc<GetParkingInfo>>()
                       ..isFetching = true
-                      ..add(FetchEvent<GetParkingInfo>());
+                      ..add(FetchEvent<GetParkingInfo>(search: ''));
                   },
                   icon: Icon(Icons.refresh),
                 ),
@@ -67,7 +69,7 @@ class ParkingBody extends StatelessWidget {
                         .isFetching) {
                   context.read<PaginationBloc<GetParkingInfo>>()
                     ..isFetching = true
-                    ..add(FetchEvent<GetParkingInfo>());
+                    ..add(FetchEvent<GetParkingInfo>(search: ''));
                 }
               }),
             itemBuilder: (context, index) => ListTile(

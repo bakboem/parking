@@ -2,7 +2,9 @@ abstract class BaseApi {
   //do something.
 
   getData(
-      {required String search,
-      required int startRange,
-      required int endRange}) async {}
+    String search,
+  ) async {}
+  updatePage() async {}
+  initPage() async {}
+  resetPage() async {}
 }

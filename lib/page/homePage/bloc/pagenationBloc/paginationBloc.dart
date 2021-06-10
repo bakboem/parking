@@ -14,8 +14,8 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
   Stream<PaginationState<T>> mapEventToState(PaginationEvent<T> event) async* {
     if (event is FetchEvent<T>) {
       yield PageLoadingState<T>(message: 'Loading ...');
-      final response =
-          await baseApi!.getData(search: '', startRange: 2, endRange: 3);
+      await baseApi!.initPage();
+      final response = await baseApi!.getData(event.search!);
       if (response != null) {
         yield SuccessState<T>(
           data: response as T,
@@ -23,6 +23,10 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
       } else {
         yield ErrorState(error: 'data is null');
       }
+    }
+    if (event is InitEvent<T>) {
+      baseApi!.resetPage();
+      yield PageInitState<T>();
     }
   }
 }

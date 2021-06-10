@@ -3,5 +3,10 @@ abstract class PaginationEvent<T> {
 }
 
 class FetchEvent<T> extends PaginationEvent<T> {
-  const FetchEvent();
+  String? search;
+  FetchEvent({required this.search});
+}
+
+class InitEvent<T> extends PaginationEvent<T> {
+  const InitEvent();
 }
