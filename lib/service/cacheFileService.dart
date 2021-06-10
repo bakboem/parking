@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert' as convert;
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/model/tokenModel/token.dart';
 import 'package:parking/service/encryptionService.dart';
 import 'package:path_provider/path_provider.dart' as path;
 
 class CacheService {
+  // -------start singleton -----------
   factory CacheService() => _sharedInstance();
   static CacheService? _instance;
   CacheService._() {
@@ -18,6 +19,8 @@ class CacheService {
     }
     return _instance!;
   }
+
+//  ---------end singleton -------------
 
   Future<Directory> getLocalDirectory() async {
     Directory tempDir = await path.getTemporaryDirectory();
@@ -150,7 +153,7 @@ class CacheService {
     }
   }
 
-  Future<Null> setToken({required Token token}) async {
+  Future<Null> saveToken({required Token token}) async {
     String encryptionToken = EncryptionService().encrypt(token.token!);
 
     Token temp = Token();
@@ -166,23 +169,40 @@ class CacheService {
 
   // ------------------ parking -------------------------
   Future<String> getParkingPath() async {
-    String tokenFileName = 'parking.json';
+    String parkingFileName = 'parking.json';
     String dirName = 'parking';
     Directory tempDir = await getLocalDirectory();
-    String tokenPath = '${tempDir.path}/$dirName/$tokenFileName';
-    return tokenPath;
+    String parkingPath = '${tempDir.path}/$dirName/$parkingFileName';
+    return parkingPath;
   }
 
-  Future<Token> getParking() async {
+  Future<String> getSearchPath(String searchKey) async {
+    String dirName = 'search';
+    Directory tempDir = await getLocalDirectory();
+    String searchPath =
+        '${tempDir.path}/$dirName/${searchKey.isEmpty ? 'search' : searchKey}.json';
+    return searchPath;
+  }
+
+  Future<GetParkingInfo> getParking() async {
     File file = File(await getParkingPath());
     if (await file.exists()) {
-      Token temp =
-          Token.fromJson(convert.jsonDecode(await file.readAsString()));
-      Token token = Token();
-      token.token = EncryptionService().decrypt(temp.token);
-      return token;
+      GetParkingInfo parkingInfo = GetParkingInfo.fromJson(
+          convert.jsonDecode(await file.readAsString()));
+      return parkingInfo;
     } else {
-      return Token();
+      return GetParkingInfo();
     }
+  }
+
+  Future<Null> saveParking({required GetParkingInfo parkingInfo}) async {
+    await saveDataToFile(
+        parkingInfo.toJson(), await createFile(await getParkingPath()));
+  }
+
+  Future<Null> saveSearchParking(
+      {required GetParkingInfo parkingInfo, required String searchKey}) async {
+    await saveDataToFile(
+        parkingInfo.toJson(), await createFile(await getSearchPath(searchKey)));
   }
 }

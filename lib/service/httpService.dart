@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:parking/api/tokenApi.dart';
 import 'package:parking/model/tokenModel/token.dart';
-import 'package:parking/service/cacheService.dart';
+import 'package:parking/service/cacheFileService.dart';
 
 class HttpService {
-  Dio _dio = Dio();
+  //  --------- start singleton --------
   factory HttpService() => _getInstance();
   static HttpService? _instance;
 
@@ -23,7 +23,7 @@ class HttpService {
         if (expired) {
           await TokenApi().refreshToken().then((refreshSuccess) {
             if (refreshSuccess) {
-              CacheService().setToken(token: TokenApi().token);
+              CacheService().saveToken(token: TokenApi().token);
             }
           });
         }
@@ -48,9 +48,11 @@ class HttpService {
       handle.next(error);
     }));
   }
+//  --------- end singleton ------------
 
+  Dio _dio = Dio();
   Future<void> setToken(String token) async =>
-      CacheService().setToken(token: Token(token: token));
+      CacheService().saveToken(token: Token(token: token));
   Future<Token> getToken() async => await CacheService().getToken();
   Future<void> checkNetWork() async {}
   Future<void> handleErrorMassage() async {}

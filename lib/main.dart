@@ -5,7 +5,6 @@ import 'page/homePage/homePage.dart';
 
 void main() {
   Bloc.observer = BaseBlocObserver();
-
   return runApp(MyApp());
 }
 

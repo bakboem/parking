@@ -2,10 +2,22 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:dio/dio.dart';
 import 'package:parking/api/baseApi.dart';
 import 'package:parking/model/tokenModel/token.dart';
-import 'package:parking/service/cacheService.dart';
+import 'package:parking/service/cacheFileService.dart';
 import 'package:parking/service/httpService.dart';
 
 class TokenApi extends BaseApi {
+  // ----------- start singleton --------------
+  factory TokenApi() => _getInstance();
+  static TokenApi? _instance;
+  static TokenApi _getInstance() {
+    if (_instance == null) {
+      _instance = TokenApi._();
+    }
+    return _instance!;
+  }
+
+  TokenApi._();
+  // ----------- end singleton --------------
   Token? _token;
   HttpService httpService = HttpService();
   CacheService cacheService = CacheService();
@@ -24,7 +36,6 @@ class TokenApi extends BaseApi {
     if (response.statusCode == 200) {
       _token = Token();
       _token!.token = response.data['token'];
-      await cacheService.setToken(token: _token!);
       return _token!;
     } else {
       return Token();
