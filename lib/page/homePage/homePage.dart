@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking/api/parkingApi.dart';
+import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/model/tokenModel/token.dart';
 import 'package:parking/service/cacheFileService.dart';
 import 'package:parking/service/filePollingService.dart';
@@ -39,8 +40,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PaginationBloc(
-        paginationReposytory: PaginationReposytory(),
+      create: (context) => PaginationBloc<GetParkingInfo>(
+        baseApi: ParkingApi(),
       )..add(FetchEvent()),
       child: Scaffold(
         appBar: AppBar(

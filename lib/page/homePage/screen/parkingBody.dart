@@ -11,40 +11,44 @@ class ParkingBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: BlocConsumer<PaginationBloc, PaginationState>(
+      child: BlocConsumer<PaginationBloc<GetParkingInfo>,
+          PaginationState<GetParkingInfo>>(
         listener: (context, state) {
-          if (state is PageLoadingState) {
+          if (state is PageLoadingState<GetParkingInfo>) {
             Scaffold.of(context)
                 .showBottomSheet((context) => Text(state.message));
-          } else if (state is SuccessState && state.data == null) {
+          } else if (state is SuccessState<GetParkingInfo> &&
+              state.data == null) {
             Scaffold.of(context)
                 .showBottomSheet((context) => Text('no more data'));
-          } else if (state is ErrorState) {
+          } else if (state is ErrorState<GetParkingInfo>) {
             Scaffold.of(context)
                 .showBottomSheet((context) => Text(state.error));
-            context.read<PaginationBloc>().isFetching = false;
+            context.read<PaginationBloc<GetParkingInfo>>().isFetching = false;
           }
           return;
         },
         builder: (context, state) {
-          if (state is PageInitState ||
-              state is PageLoadingState && parkingInfo == null) {
+          if (state is PageInitState<GetParkingInfo> ||
+              state is PageLoadingState<GetParkingInfo> &&
+                  parkingInfo == null) {
             return CircularProgressIndicator();
-          } else if (state is SuccessState) {
+          } else if (state is SuccessState<GetParkingInfo>) {
             parkingInfo = state.data;
-            context.read<PaginationBloc>().isFetching = false;
+            context.read<PaginationBloc<GetParkingInfo>>().isFetching = false;
             // ignore: deprecated_member_use
             Scaffold.of(context).hideCurrentSnackBar();
-          } else if (state is ErrorState && parkingInfo == null) {
+          } else if (state is ErrorState<GetParkingInfo> &&
+              parkingInfo == null) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 IconButton(
                   onPressed: () {
-                    context.read()<PaginationBloc>()
+                    context.read()<PaginationBloc<GetParkingInfo>>()
                       ..isFetching = true
-                      ..add(FetchEvent());
+                      ..add(FetchEvent<GetParkingInfo>());
                   },
                   icon: Icon(Icons.refresh),
                 ),
@@ -58,10 +62,12 @@ class ParkingBody extends StatelessWidget {
               ..addListener(() {
                 if (_scrollController.offset ==
                         _scrollController.position.maxScrollExtent &&
-                    !context.read<PaginationBloc>().isFetching) {
-                  context.read<PaginationBloc>()
+                    !context
+                        .read<PaginationBloc<GetParkingInfo>>()
+                        .isFetching) {
+                  context.read<PaginationBloc<GetParkingInfo>>()
                     ..isFetching = true
-                    ..add(FetchEvent());
+                    ..add(FetchEvent<GetParkingInfo>());
                 }
               }),
             itemBuilder: (context, index) => ListTile(

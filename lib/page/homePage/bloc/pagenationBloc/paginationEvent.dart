@@ -1,7 +1,7 @@
-abstract class PaginationEvent {
+abstract class PaginationEvent<T> {
   const PaginationEvent();
 }
 
-class FetchEvent extends PaginationEvent {
+class FetchEvent<T> extends PaginationEvent<T> {
   const FetchEvent();
 }

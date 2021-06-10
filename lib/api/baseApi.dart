@@ -1,7 +1,8 @@
-import 'package:parking/service/filePollingService.dart';
-
 abstract class BaseApi {
-  FilePollingService filePollingService = FilePollingService();
   //do something.
 
+  getData(
+      {required String search,
+      required int startRange,
+      required int endRange}) async {}
 }

@@ -1,12 +1,12 @@
-abstract class PaginationState {
+abstract class PaginationState<T> {
   const PaginationState();
 }
 
-class PageInitState extends PaginationState {
+class PageInitState<T> extends PaginationState<T> {
   const PageInitState();
 }
 
-class PageLoadingState extends PaginationState {
+class PageLoadingState<T> extends PaginationState<T> {
   final String message;
 
   const PageLoadingState({
@@ -14,7 +14,7 @@ class PageLoadingState extends PaginationState {
   });
 }
 
-class SuccessState<T> extends PaginationState {
+class SuccessState<T> extends PaginationState<T> {
   final T data;
 
   const SuccessState({
@@ -22,7 +22,7 @@ class SuccessState<T> extends PaginationState {
   });
 }
 
-class ErrorState extends PaginationState {
+class ErrorState<T> extends PaginationState<T> {
   final String error;
 
   const ErrorState({

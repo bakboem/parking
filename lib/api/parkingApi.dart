@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:parking/api/baseApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
@@ -40,6 +39,15 @@ class ParkingApi extends BaseApi {
       _parkingInfo = GetParkingInfo();
     }
     return _parkingInfo!;
+  }
+
+  @override
+  getData(
+      {required String search,
+      required int startRange,
+      required int endRange}) {
+    // TODO: implement getData
+    return this.data(search, startRange: startRange, endRange: endRange);
   }
 }
 
