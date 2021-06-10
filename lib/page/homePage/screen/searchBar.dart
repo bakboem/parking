@@ -49,7 +49,7 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text("Search Demo"),
+      title: Text("서울주차장검색"),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.search),
