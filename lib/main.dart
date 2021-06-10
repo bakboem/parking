@@ -11,13 +11,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
-          appBar: AppBar(
-            title: Text('Material App Bar'),
-          ),
-          body: HomePage()),
-    );
+    return MaterialApp(title: 'Material App', home: HomePage());
   }
 }
