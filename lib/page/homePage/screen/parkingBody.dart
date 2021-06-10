@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
+import 'package:parking/page/homePage/screen/searchBar.dart';
 
 // ignore: must_be_immutable
 class ParkingBody extends StatelessWidget {
@@ -22,16 +23,7 @@ class ParkingBody extends StatelessWidget {
           }
 
           if (state is SuccessState<GetParkingInfo>) {}
-          //  else if (state is SuccessState<GetParkingInfo> &&
-          //     // ignore: unnecessary_null_comparison
-          //     state.data == null) {
-          //   Scaffold.of(context)
-          //       .showBottomSheet((context) => Text('no more data'));
-          // } else if (state is ErrorState<GetParkingInfo>) {
-          //   Scaffold.of(context)
-          //       .showBottomSheet((context) => Text(state.error));
-          //   context.read<PaginationBloc<GetParkingInfo>>().isFetching = false;
-          // }
+
           return;
         },
         builder: (context, state) {
@@ -42,27 +34,41 @@ class ParkingBody extends StatelessWidget {
             context.read<PaginationBloc<GetParkingInfo>>().isFetching = false;
             parkingInfo = state.data;
           }
-          return ListView.separated(
-            controller: _scrollController
-              ..addListener(() {
-                if (_scrollController.offset ==
-                        _scrollController.position.maxScrollExtent &&
-                    !context
+          return Column(
+            children: [
+              SearchBar(),
+              Expanded(
+                child: RefreshIndicator(
+                    child: ListView.separated(
+                      physics: ClampingScrollPhysics(),
+                      controller: _scrollController
+                        ..addListener(() {
+                          if (_scrollController.offset ==
+                                  _scrollController.position.maxScrollExtent &&
+                              !context
+                                  .read<PaginationBloc<GetParkingInfo>>()
+                                  .isFetching) {
+                            context.read<PaginationBloc<GetParkingInfo>>()
+                              ..isFetching = true
+                              ..add(
+                                  RequestDataEvent<GetParkingInfo>(search: ''));
+                          }
+                        }),
+                      itemBuilder: (context, index) => ListTile(
+                        leading: Icon(Icons.ac_unit),
+                        title: Center(
+                          child: Text('$index'),
+                        ),
+                      ),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 20),
+                      itemCount: parkingInfo!.dataList!.length,
+                    ),
+                    onRefresh: () async => context
                         .read<PaginationBloc<GetParkingInfo>>()
-                        .isFetching) {
-                  context.read<PaginationBloc<GetParkingInfo>>()
-                    ..isFetching = true
-                    ..add(RequestDataEvent<GetParkingInfo>(search: ''));
-                }
-              }),
-            itemBuilder: (context, index) => ListTile(
-              leading: Icon(Icons.ac_unit),
-              title: Center(
-                child: Text('$index'),
+                        .add(ResetEvent())),
               ),
-            ),
-            separatorBuilder: (context, index) => const SizedBox(height: 20),
-            itemCount: parkingInfo!.dataList!.length,
+            ],
           );
         },
       ),

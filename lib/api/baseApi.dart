@@ -4,4 +4,5 @@ abstract class BaseApi {
   updatePage() async {}
   updateData({required dynamic newData}) async {}
   requestData(String search) async {}
+  resetCache() {}
 }

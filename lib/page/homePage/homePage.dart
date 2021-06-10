@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking/api/parkingApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
+import 'package:parking/page/homePage/screen/searchAppBar.dart';
+import 'package:parking/page/homePage/screen/searchBar.dart';
 import 'screen/parkingBody.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,11 +26,9 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider(
       create: (context) => PaginationBloc<GetParkingInfo>(
         baseApi: ParkingApi(),
-      )..add(ResetPageEvent()),
+      )..add(ResetEvent()),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('parking'),
-        ),
+        // appBar: SearchAppBar(context: context),
         body: ParkingBody(),
       ),
     );

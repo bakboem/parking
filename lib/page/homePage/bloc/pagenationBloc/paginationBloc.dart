@@ -12,7 +12,7 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
 
   @override
   Stream<PaginationState<T>> mapEventToState(PaginationEvent<T> event) async* {
-    if (event is ResetPageEvent<T>) {
+    if (event is ResetEvent<T>) {
       yield* resetEventHandle();
     }
     if (event is RequestDataEvent<T>) {
@@ -21,7 +21,8 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
   }
 
   Stream<PaginationState<T>> resetEventHandle() async* {
-    baseApi!.resetPage();
+    await baseApi!.resetPage();
+    await baseApi!.resetCache();
     yield PageInitState<T>();
   }
 
@@ -30,15 +31,13 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
     final response = await baseApi!.requestData(search);
     if (response != null) {
       await baseApi!.updatePage();
-      var temp = await baseApi!.updateData(newData: response);
-      temp as GetParkingInfo;
-      print(temp.dataList!.length);
-      print(temp.dataList!.length);
-      print(temp.dataList!.length);
-      print(temp.dataList!.length);
-      print(temp.dataList!.length);
+      var cacheData = await baseApi!.updateData(newData: response);
+      cacheData as GetParkingInfo;
+      print(cacheData.dataList!.length);
+      print(cacheData.dataList!.length);
+
       yield SuccessState<T>(
-        data: temp as T,
+        data: cacheData as T,
       );
     } else {
       yield ErrorState<T>(error: 'data is null');

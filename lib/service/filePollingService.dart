@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:watcher/watcher.dart';
-import 'cacheFileService.dart';
 
 class FilePollingService {
   // -------start singleton -----------
@@ -18,7 +17,6 @@ class FilePollingService {
   }
 
 //  ---------end singleton -------------
-  CacheService cacheService = CacheService();
   watchDir(String dirPath) async {
     var watcher = DirectoryWatcher(dirPath);
     watcher.events.listen((event) async {

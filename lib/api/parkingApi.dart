@@ -19,8 +19,8 @@ class ParkingApi extends BaseApi {
   ParkingApi._();
 // ------------ end singleton ---------
   HttpService httpService = HttpService();
-  CacheService cacheService = CacheService();
-  CacheObjectService cacheObjectService = CacheObjectService();
+  // CacheService cacheService = CacheService();
+  // CacheObjectService cacheObjectService = CacheObjectService();
   GetParkingInfo? _parkingInfo;
   static const baseUrl = 'http://openapi.seoul.go.kr:8088';
   static const apiKey = '54744f4462636e62353146794f4649';
@@ -86,6 +86,10 @@ class ParkingApi extends BaseApi {
     return cache;
   }
 
+  resetcache() async {
+    cache = null;
+  }
+
   resetpage() => initPage();
 
   @override
@@ -111,5 +115,10 @@ class ParkingApi extends BaseApi {
   @override
   resetPage() {
     return this.resetpage();
+  }
+
+  @override
+  resetCache() {
+    return this.resetcache();
   }
 }
