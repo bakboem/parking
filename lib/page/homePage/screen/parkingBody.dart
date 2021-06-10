@@ -15,72 +15,59 @@ class ParkingBody extends StatelessWidget {
       child: BlocConsumer<PaginationBloc<GetParkingInfo>,
           PaginationState<GetParkingInfo>>(
         listener: (context, state) {
-          if (state is PageLoadingState<GetParkingInfo>) {
-            Scaffold.of(context)
-                .showBottomSheet((context) => Text(state.message));
-          } else if (state is SuccessState<GetParkingInfo> &&
-              // ignore: unnecessary_null_comparison
-              state.data == null) {
-            Scaffold.of(context)
-                .showBottomSheet((context) => Text('no more data'));
-          } else if (state is ErrorState<GetParkingInfo>) {
-            Scaffold.of(context)
-                .showBottomSheet((context) => Text(state.error));
-            context.read<PaginationBloc<GetParkingInfo>>().isFetching = false;
+          if (state is PageInitState<GetParkingInfo>) {
+            context
+                .read<PaginationBloc<GetParkingInfo>>()
+                .add(RequestDataEvent<GetParkingInfo>(search: ''));
           }
+          if (state is ProcessDataState<GetParkingInfo>) {
+            context
+                .read<PaginationBloc<GetParkingInfo>>()
+                .add(AppendDataEvent<GetParkingInfo>(data: state.data));
+          }
+          if (state is SuccessState<GetParkingInfo>) {}
+          //  else if (state is SuccessState<GetParkingInfo> &&
+          //     // ignore: unnecessary_null_comparison
+          //     state.data == null) {
+          //   Scaffold.of(context)
+          //       .showBottomSheet((context) => Text('no more data'));
+          // } else if (state is ErrorState<GetParkingInfo>) {
+          //   Scaffold.of(context)
+          //       .showBottomSheet((context) => Text(state.error));
+          //   context.read<PaginationBloc<GetParkingInfo>>().isFetching = false;
+          // }
           return;
         },
         builder: (context, state) {
           if (state is PageInitState<GetParkingInfo> ||
-              state is PageLoadingState<GetParkingInfo> &&
-                  parkingInfo == null) {
+              state is LoadingState<GetParkingInfo> && parkingInfo == null) {
             return CircularProgressIndicator();
           } else if (state is SuccessState<GetParkingInfo>) {
-            parkingInfo = state.data;
             context.read<PaginationBloc<GetParkingInfo>>().isFetching = false;
-            // ignore: deprecated_member_use
-            Scaffold.of(context).hideCurrentSnackBar();
-          } else if (state is ErrorState<GetParkingInfo> &&
-              parkingInfo == null) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    context.read()<PaginationBloc<GetParkingInfo>>()
+            return ListView.separated(
+              controller: _scrollController
+                ..addListener(() {
+                  if (_scrollController.offset ==
+                          _scrollController.position.maxScrollExtent &&
+                      !context
+                          .read<PaginationBloc<GetParkingInfo>>()
+                          .isFetching) {
+                    context.read<PaginationBloc<GetParkingInfo>>()
                       ..isFetching = true
-                      ..add(FetchEvent<GetParkingInfo>(search: ''));
-                  },
-                  icon: Icon(Icons.refresh),
+                      ..add(RequestDataEvent<GetParkingInfo>(search: ''));
+                  }
+                }),
+              itemBuilder: (context, index) => ListTile(
+                leading: Icon(Icons.ac_unit),
+                title: Center(
+                  child: Text('$index'),
                 ),
-                const SizedBox(height: 15),
-                Text(state.error, textAlign: TextAlign.center),
-              ],
+              ),
+              separatorBuilder: (context, index) => const SizedBox(height: 20),
+              itemCount: state.data.dataList!.length,
             );
           }
-          return ListView.separated(
-            controller: _scrollController
-              ..addListener(() {
-                if (_scrollController.offset ==
-                        _scrollController.position.maxScrollExtent &&
-                    !context
-                        .read<PaginationBloc<GetParkingInfo>>()
-                        .isFetching) {
-                  context.read<PaginationBloc<GetParkingInfo>>()
-                    ..isFetching = true
-                    ..add(FetchEvent<GetParkingInfo>(search: ''));
-                }
-              }),
-            itemBuilder: (context, index) => ListTile(
-              leading: Icon(Icons.ac_unit),
-              title: Center(
-                child: Text('$index'),
-              ),
-            ),
-            separatorBuilder: (context, index) => const SizedBox(height: 20),
-            itemCount: parkingInfo!.dataList!.length,
-          );
+          return CircularProgressIndicator();
         },
       ),
     );

@@ -2,11 +2,16 @@ abstract class PaginationEvent<T> {
   const PaginationEvent();
 }
 
-class FetchEvent<T> extends PaginationEvent<T> {
-  String? search;
-  FetchEvent({required this.search});
+class ResetPageEvent<T> extends PaginationEvent<T> {
+  const ResetPageEvent();
 }
 
-class InitEvent<T> extends PaginationEvent<T> {
-  const InitEvent();
+class AppendDataEvent<T> extends PaginationEvent<T> {
+  T data;
+  AppendDataEvent({required this.data});
+}
+
+class RequestDataEvent<T> extends PaginationEvent<T> {
+  String? search;
+  RequestDataEvent({required this.search});
 }

@@ -6,17 +6,21 @@ class PageInitState<T> extends PaginationState<T> {
   const PageInitState();
 }
 
-class PageLoadingState<T> extends PaginationState<T> {
+class ProcessDataState<T> extends PaginationState<T> {
+  final T data;
+  const ProcessDataState({required this.data});
+}
+
+class LoadingState<T> extends PaginationState<T> {
   final String message;
 
-  const PageLoadingState({
+  const LoadingState({
     required this.message,
   });
 }
 
 class SuccessState<T> extends PaginationState<T> {
   final T data;
-
   const SuccessState({
     required this.data,
   });

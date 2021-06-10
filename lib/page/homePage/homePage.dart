@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider(
       create: (context) => PaginationBloc<GetParkingInfo>(
         baseApi: ParkingApi(),
-      )..add(FetchEvent(search: '')),
+      )..add(ResetPageEvent()),
       child: Scaffold(
         appBar: AppBar(
           title: Text('parking'),

@@ -23,7 +23,7 @@ class ParkingApi extends BaseApi {
   HttpService httpService = HttpService();
   CacheService cacheService = CacheService();
   CacheObjectService cacheObjectService = CacheObjectService();
-  GetParkingInfo? _parkingInfo;
+  GetParkingInfo? _parkingInfo = GetParkingInfo(dataList: []);
   static const baseUrl = 'http://openapi.seoul.go.kr:8088';
   static const apiKey = '54744f4462636e62353146794f4649';
   static const dataType = 'json';
@@ -33,8 +33,9 @@ class ParkingApi extends BaseApi {
   int? startRange;
   int? endRange;
   int? pageSize = 30;
+  GetParkingInfo cache = GetParkingInfo();
   //지정 값만 넣어주면 data 호출.
-  Future<GetParkingInfo> data(
+  Future<GetParkingInfo> requestdata(
     String search,
   ) async {
     Response response = await httpService.getData(
@@ -76,13 +77,19 @@ class ParkingApi extends BaseApi {
     endRange = endRange! + pageSize!;
   }
 
-  resetpage() {
-    initpage();
+  resetpage() => initPage();
+
+  updatedata({required dynamic data}) async {
+    var newData = data as GetParkingInfo;
+    // print('sssssssss${cache.dataList!.length}');
+    cache.result = newData.result;
+    cache.total = newData.total;
+    return cache;
   }
 
   @override
-  getData(String search) {
-    return this.data(search);
+  requestData(String search) {
+    return this.requestdata(search);
   }
 
   @override
@@ -93,6 +100,11 @@ class ParkingApi extends BaseApi {
   @override
   initPage() {
     return this.initpage();
+  }
+
+  @override
+  updateData({required data}) {
+    return this.updatedata(data: data);
   }
 
   @override
