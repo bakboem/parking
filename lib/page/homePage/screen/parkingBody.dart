@@ -51,14 +51,6 @@ class _ParkingBodyState extends State<ParkingBody> {
     );
   }
 
-  distance(double targetLat, double targetLon) {
-    double distanceInMeters = GeolocatorPlatform.instance
-        .distanceBetween(lat!, lon!, targetLat, targetLon);
-    print(' ttt $targetLat');
-    print(targetLon);
-    return (distanceInMeters / 1000).toStringAsFixed(1);
-  }
-
   String subStr(String str) {
     return str.substring(str.length - 2, str.length - 1);
   }
@@ -67,10 +59,18 @@ class _ParkingBodyState extends State<ParkingBody> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     lat = prefs.getDouble('lat');
     lon = prefs.getDouble('lon');
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    distance(double targetLat, double targetLon) {
+      double distanceInMeters = GeolocatorPlatform.instance
+          .distanceBetween(lat ??= 0, lon ??= 0, targetLat, targetLon);
+
+      return (distanceInMeters / 1000).toStringAsFixed(1);
+    }
+
     return Center(
       child: BlocConsumer<PaginationBloc<GetParkingInfo>,
           PaginationState<GetParkingInfo>>(
@@ -128,7 +128,7 @@ class _ParkingBodyState extends State<ParkingBody> {
                       title: Text(
                           '${parkingInfo!.dataList![index].parkingName}$index'),
                       subtitle: Text(
-                          '${distance(parkingInfo!.dataList![index].lng!, parkingInfo!.dataList![index].lat!)}'),
+                          '${distance(parkingInfo!.dataList![index].lat!, parkingInfo!.dataList![index].lng!)}'),
                       onTap: () {
                         Navigator.push(
                           context,

@@ -8,8 +8,6 @@ class LoadingListPage extends StatefulWidget {
 }
 
 class _LoadingListPageState extends State<LoadingListPage> {
-  bool _enabled = true;
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -19,7 +17,7 @@ class _LoadingListPageState extends State<LoadingListPage> {
           child: Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[100]!,
-            enabled: _enabled,
+            enabled: false,
             child: ListView.builder(
               itemBuilder: (_, __) => Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
