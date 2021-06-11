@@ -1,4 +1,4 @@
-abstract class BaseApi {
+abstract class PaginationApi {
   initPage() async {}
   resetPage() async {}
   updatePage() async {}

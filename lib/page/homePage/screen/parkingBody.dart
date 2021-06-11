@@ -4,24 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:parking/api/parkingApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
+import 'package:parking/model/parkingModel/parkingData.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
 import 'package:parking/page/homePage/screen/loadingScreen.dart';
 import 'package:parking/page/homePage/screen/parkingDetail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
-class ParkingBody extends StatefulWidget {
-  @override
-  _ParkingBodyState createState() => _ParkingBodyState();
-}
-
-class _ParkingBodyState extends State<ParkingBody> {
-  @override
-  void initState() {
-    super.initState();
-    getLatLonData();
-  }
-
+class ParkingBody extends StatelessWidget {
   GetParkingInfo? parkingInfo;
 
   double? lat;
@@ -59,17 +49,50 @@ class _ParkingBodyState extends State<ParkingBody> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     lat = prefs.getDouble('lat');
     lon = prefs.getDouble('lon');
-    setState(() {});
+  }
+
+  distance(double targetLat, double targetLon) {
+    double distanceInMeters = GeolocatorPlatform.instance
+        .distanceBetween(lat ??= 0, lon ??= 0, targetLat, targetLon);
+
+    return (distanceInMeters / 1000).toStringAsFixed(1);
+  }
+
+  Widget parkingType() {
+    return Container();
+  }
+
+  Widget cardItem(BuildContext context, ParkingData data, int index) {
+    return Column(
+      children: [
+        index == 0 ? parkingType() : Container(),
+        Container(
+          child: ListTile(
+            leading: Text(subStr(data.parkingName!)),
+            title: Center(
+              child: ListTile(
+                title: Text('${data.parkingName}$index'),
+                subtitle: Text('${distance(data.lat!, data.lng!)}'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ParkingDetail(
+                              parkingData: parkingInfo!.dataList![index],
+                            )),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    distance(double targetLat, double targetLon) {
-      double distanceInMeters = GeolocatorPlatform.instance
-          .distanceBetween(lat ??= 0, lon ??= 0, targetLat, targetLon);
-
-      return (distanceInMeters / 1000).toStringAsFixed(1);
-    }
+    getLatLonData();
 
     return Center(
       child: BlocConsumer<PaginationBloc<GetParkingInfo>,
@@ -120,27 +143,8 @@ class _ParkingBodyState extends State<ParkingBody> {
                             search: ParkingApi().searchKeyWords));
                     }
                   }),
-                itemBuilder: (context, index) => ListTile(
-                  leading:
-                      Text(subStr(parkingInfo!.dataList![index].parkingName!)),
-                  title: Center(
-                    child: ListTile(
-                      title: Text(
-                          '${parkingInfo!.dataList![index].parkingName}$index'),
-                      subtitle: Text(
-                          '${distance(parkingInfo!.dataList![index].lat!, parkingInfo!.dataList![index].lng!)}'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ParkingDetail(
-                                    parkingData: parkingInfo!.dataList![index],
-                                  )),
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                itemBuilder: (context, index) =>
+                    cardItem(context, parkingInfo!.dataList![index], index),
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 20),
                 itemCount: parkingInfo!.dataList!.length,

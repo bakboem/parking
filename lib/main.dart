@@ -13,7 +13,7 @@ void main() {
     providers: [
       BlocProvider<PaginationBloc<GetParkingInfo>>(
         create: (context) =>
-            PaginationBloc<GetParkingInfo>(baseApi: ParkingApi())
+            PaginationBloc<GetParkingInfo>(pageApi: ParkingApi())
               ..add(ResetEvent()),
       ),
     ],

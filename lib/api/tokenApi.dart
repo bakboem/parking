@@ -1,11 +1,10 @@
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:dio/dio.dart';
-import 'package:parking/api/baseApi.dart';
 import 'package:parking/model/tokenModel/token.dart';
 import 'package:parking/service/cacheFileService.dart';
 import 'package:parking/service/httpService.dart';
 
-class TokenApi extends BaseApi {
+class TokenApi {
   // ----------- start singleton --------------
   factory TokenApi() => _getInstance();
   static TokenApi? _instance;

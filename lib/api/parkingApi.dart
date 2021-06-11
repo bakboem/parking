@@ -3,7 +3,7 @@ import 'package:parking/api/baseApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import '../service/httpService.dart';
 
-class ParkingApi extends BaseApi {
+class ParkingApi extends PaginationApi {
   // ---------- start singleton -------
   factory ParkingApi() => _getInstance();
   static ParkingApi? _instance;
