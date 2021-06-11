@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:parking/api/parkingApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
 import 'package:parking/page/homePage/screen/loadingScreen.dart';
 import 'package:parking/page/homePage/screen/parkingDetail.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
-class ParkingBody extends StatelessWidget {
+class ParkingBody extends StatefulWidget {
+  @override
+  _ParkingBodyState createState() => _ParkingBodyState();
+}
+
+class _ParkingBodyState extends State<ParkingBody> {
+  @override
+  void initState() {
+    super.initState();
+    getLatLonData();
+  }
+
   GetParkingInfo? parkingInfo;
+
+  double? lat;
+
+  double? lon;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -32,6 +49,24 @@ class ParkingBody extends StatelessWidget {
         );
       },
     );
+  }
+
+  distance(double targetLat, double targetLon) {
+    double distanceInMeters = GeolocatorPlatform.instance
+        .distanceBetween(lat!, lon!, targetLat, targetLon);
+    print(' ttt $targetLat');
+    print(targetLon);
+    return (distanceInMeters / 1000).toStringAsFixed(1);
+  }
+
+  String subStr(String str) {
+    return str.substring(str.length - 2, str.length - 1);
+  }
+
+  getLatLonData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    lat = prefs.getDouble('lat');
+    lon = prefs.getDouble('lon');
   }
 
   @override
@@ -86,13 +121,14 @@ class ParkingBody extends StatelessWidget {
                     }
                   }),
                 itemBuilder: (context, index) => ListTile(
-                  leading: Text(
-                      '${parkingInfo!.dataList![index].parkingName!.substring(parkingInfo!.dataList![index].parkingName!.length - 2, parkingInfo!.dataList![index].parkingName!.length - 1)}'),
+                  leading:
+                      Text(subStr(parkingInfo!.dataList![index].parkingName!)),
                   title: Center(
                     child: ListTile(
                       title: Text(
                           '${parkingInfo!.dataList![index].parkingName}$index'),
-                      subtitle: Text('data'),
+                      subtitle: Text(
+                          '${distance(parkingInfo!.dataList![index].lng!, parkingInfo!.dataList![index].lat!)}'),
                       onTap: () {
                         Navigator.push(
                           context,
