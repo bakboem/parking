@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking/api/parkingApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
+import 'package:parking/page/homePage/screen/loadingScreen.dart';
 import 'package:parking/page/homePage/screen/parkingDetail.dart';
 
 // ignore: must_be_immutable
@@ -55,7 +56,7 @@ class ParkingBody extends StatelessWidget {
         builder: (context, state) {
           if (state is PageInitState<GetParkingInfo> ||
               state is LoadingState<GetParkingInfo> && parkingInfo == null) {
-            return CircularProgressIndicator();
+            return LoadingListPage();
           } else if (state is SuccessState<GetParkingInfo>) {
             context.read<PaginationBloc<GetParkingInfo>>().isFetching = false;
             // ignore: unnecessary_null_comparison

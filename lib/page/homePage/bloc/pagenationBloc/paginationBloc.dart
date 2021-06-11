@@ -34,6 +34,10 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
       await baseApi!.resetCearchKeyWord(keyword: search);
       await baseApi!.resetCache();
       await baseApi!.resetPage();
+
+      print('firestcall');
+      print('firestcall');
+      print('firestcall');
     } else {
       print('相同');
     }
@@ -42,6 +46,12 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
       final response = await baseApi!.requestData();
 
       if (response != null) {
+        print('response!=nulll');
+        print('response!=nulll');
+        print('response!=nulll');
+        print('response!=nulll');
+
+        print(response);
         var cacheData = await baseApi!.updateData(newData: response);
         cacheData as GetParkingInfo;
 

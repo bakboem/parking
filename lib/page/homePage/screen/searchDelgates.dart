@@ -58,9 +58,6 @@ class SearchWithHistoryDelegate extends SearchDelegate<String> {
             return ListTile(
                 leading: Icon(Icons.restore),
                 title: Text("${_oldFilters[index]}"),
-                // trailing: IconButton(
-                //     icon: Icon(Icons.delete),
-                //     onPressed: () => _oldFilters.remove(_oldFilters[index])),
                 onTap: () async {
                   context
                       .read<PaginationBloc<GetParkingInfo>>()

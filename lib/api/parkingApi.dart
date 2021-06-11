@@ -74,6 +74,7 @@ class ParkingApi extends BaseApi {
     if (newData.dataList!.length != 0) {
       if (cache == null) {
         cache = newData;
+        print('====new data');
       } else {
         cache!.dataList!.addAll(newData.dataList!);
         cache!.total = newData.total;
