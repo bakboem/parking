@@ -28,22 +28,31 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
 
   Stream<PaginationState<T>> requestDataEventHandle(String search) async* {
     yield LoadingState<T>(message: 'Loading ...');
-    if (search != baseApi!.getSearchKey()) {
+
+    if (search != await baseApi!.getSearchKey()) {
       await baseApi!.resetCearchKeyWord(keyword: search);
       await baseApi!.resetCache();
       await baseApi!.resetPage();
     } else {
       print('相同');
     }
-    var hasmore = await baseApi!.hasMore();
-    if (hasmore) {
-      await baseApi!.updatePage();
-    } else {}
+
     final response = await baseApi!.requestData();
+
     if (response != null) {
       var cacheData = await baseApi!.updateData(newData: response);
       cacheData as GetParkingInfo;
 
+      var hasmore = await baseApi!.hasMore();
+
+      if (hasmore) {
+        await baseApi!.updatePage();
+        print('hasMore');
+      } else {
+        print('no More');
+        print('no More');
+        yield ErrorState<T>(error: 'data is null');
+      }
       yield SuccessState<T>(
         data: cacheData as T,
       );

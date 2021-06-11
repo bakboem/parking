@@ -28,6 +28,11 @@ class ParkingApi extends BaseApi {
 
   int? startRange;
   int? endRange;
+
+  ///
+  ///
+  ///
+  ///
   int? pageSize = 30;
   String searchKeyWord = '';
   GetParkingInfo? cache;
@@ -81,10 +86,10 @@ class ParkingApi extends BaseApi {
 
   hasmore() {
     if (cache != null) {
-      print(' cache ${cache!.total!}');
-      print(' cache ${cache!.total!}');
-      print(' end $endRange');
-      print(' end $endRange');
+      print(' cache total ${cache!.total!}');
+      print(' cache total ${cache!.total!}');
+      print(' end total $endRange');
+      print(' end total $endRange');
       return cache!.total! > endRange!;
     } else {
       return true;

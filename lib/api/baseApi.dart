@@ -8,4 +8,5 @@ abstract class BaseApi {
   resetCache() async {}
   resetCearchKeyWord({required String keyword}) async {}
   getSearchKey() async {}
+  isFirstCall() async {}
 }
