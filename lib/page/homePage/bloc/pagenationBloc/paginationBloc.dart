@@ -62,6 +62,7 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
         yield ErrorState<T>(error: 'data is null');
       }
     } else {
+      //openAPI 특정 맟춰
       var hasmore = await baseApi!.hasMore();
 
       if (hasmore) {
