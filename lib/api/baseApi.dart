@@ -2,7 +2,10 @@ abstract class BaseApi {
   initPage() async {}
   resetPage() async {}
   updatePage() async {}
+  hasMore() async {}
   updateData({required dynamic newData}) async {}
-  requestData(String search) async {}
-  resetCache() {}
+  requestData() async {}
+  resetCache() async {}
+  resetCearchKeyWord({required String keyword}) async {}
+  getSearchKey() async {}
 }

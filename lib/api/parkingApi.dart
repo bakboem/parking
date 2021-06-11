@@ -19,7 +19,7 @@ class ParkingApi extends BaseApi {
   HttpService httpService = HttpService();
   // CacheService cacheService = CacheService();
   // CacheObjectService cacheObjectService = CacheObjectService();
-  GetParkingInfo? _parkingInfo;
+
   static const baseUrl = 'http://openapi.seoul.go.kr:8088';
   static const apiKey = '54744f4462636e62353146794f4649';
   static const dataType = 'json';
@@ -29,61 +29,69 @@ class ParkingApi extends BaseApi {
   int? startRange;
   int? endRange;
   int? pageSize = 30;
+  String searchKeyWord = '';
   GetParkingInfo? cache;
   //지정 값만 넣어주면 data 호출.
-  Future<GetParkingInfo> requestdata(
-    String search,
-  ) async {
+  Future<GetParkingInfo> requestdata() async {
+    GetParkingInfo? temp;
     try {
       Response response = await httpService.getData(
-        url: '$parkingUrl/$startRange/$endRange/$search',
+        url: '$parkingUrl/$startRange/$endRange/$searchKeyWord',
       );
-      if (response.statusCode == 200) {
-        if (response.data['GetParkInfo'] != null) {
-          _parkingInfo = GetParkingInfo.fromJson(response.data['GetParkInfo']);
-        }
+      if (response.data['GetParkInfo'] != null) {
+        temp = GetParkingInfo.fromJson(response.data['GetParkInfo']);
+      } else {
+        temp = GetParkingInfo(dataList: []);
       }
     } catch (e) {
       print(e);
     }
-    return _parkingInfo!;
+    return temp!;
   }
 
+  get searchKeyWords => this.searchKeyWord;
   initpage() {
     startRange = 0;
     endRange = pageSize;
+    print('initPage ==== startRange:  $startRange');
+    print('initPage ==== endRange:  $endRange');
   }
 
   updatepage() {
     startRange = endRange! + 1;
     endRange = endRange! + pageSize!;
+    print('updatePage ==== startRange:  $startRange');
+    print('updatePage ==== endRange:  $endRange');
   }
 
   updatedata(newData) async {
-    if (cache == null) {
-      print('null??????');
-      print('null??????');
-      print('null??????');
-      print('null??????');
-      print('null??????');
-      print('null??????');
-      print('null??????');
-      print('null??????');
-      cache = newData;
+    newData as GetParkingInfo;
+    if (newData.dataList!.length != 0) {
+      if (cache == null) {
+        cache = newData;
+      } else {
+        cache!.dataList!.addAll(newData.dataList!);
+        cache!.total = newData.total;
+      }
     } else {
-      print('not null');
-      print('not null');
-      print('not null');
-      print('not null');
-      print('not null');
-      print('not null');
-      cache as GetParkingInfo;
-      newData as GetParkingInfo;
-      cache!.dataList!.addAll(newData.dataList!);
+      cache = GetParkingInfo(total: 0, dataList: []);
     }
     return cache;
   }
 
+  hasmore() {
+    if (cache != null) {
+      print(' cache ${cache!.total!}');
+      print(' cache ${cache!.total!}');
+      print(' end $endRange');
+      print(' end $endRange');
+      return cache!.total! > endRange!;
+    } else {
+      return true;
+    }
+  }
+
+  resetCearchKeyword(String keyword) => this.searchKeyWord = keyword;
   resetcache() async {
     cache = null;
   }
@@ -91,8 +99,8 @@ class ParkingApi extends BaseApi {
   resetpage() => initPage();
 
   @override
-  requestData(String search) async {
-    return await this.requestdata(search);
+  requestData() async {
+    return await this.requestdata();
   }
 
   @override
@@ -118,5 +126,20 @@ class ParkingApi extends BaseApi {
   @override
   resetCache() {
     return this.resetcache();
+  }
+
+  @override
+  resetCearchKeyWord({required String keyword}) {
+    return this.resetCearchKeyword(keyword);
+  }
+
+  @override
+  getSearchKey() {
+    return this.searchKeyWord;
+  }
+
+  @override
+  hasMore() {
+    return this.hasmore();
   }
 }
