@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:parking/api/baseApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
-import 'package:parking/service/cacheFileService.dart';
-import 'package:parking/service/cacheObjectService.dart';
 import '../service/httpService.dart';
 
 class ParkingApi extends BaseApi {

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:parking/model/parkingModel/getParkingInfo.dart';
+import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
+import 'package:parking/page/homePage/bloc/pagenationBloc/paginationBloc.dart';
 
 typedef OnSearchChanged = Future<List<String>> Function(String);
 
-class SearchWithSuggestionDelegate extends SearchDelegate<String> {
-  ///[onSearchChanged] gets the [query] as an argument. Then this callback
-  ///should process [query] then return an [List<String>] as suggestions.
-  ///Since its returns a [Future] you get suggestions from server too.
+class SearchWithHistoryDelegate extends SearchDelegate<String> {
   final OnSearchChanged onSearchChanged;
 
-  ///This [_oldFilters] used to store the previous suggestions. While waiting
-  ///for [onSearchChanged] to completed, [_oldFilters] are displayed.
   List<String> _oldFilters = const [];
 
-  SearchWithSuggestionDelegate(
+  SearchWithHistoryDelegate(
       {required String searchFieldLabel, required this.onSearchChanged})
       : super(searchFieldLabel: searchFieldLabel);
 
@@ -35,19 +34,21 @@ class SearchWithSuggestionDelegate extends SearchDelegate<String> {
     ];
   }
 
-  ///OnSubmit in the keyboard, returns the [query]
   @override
-  void showResults(BuildContext context) {
+  void showResults(BuildContext context) async {
+    context
+        .read<PaginationBloc<GetParkingInfo>>()
+        .add(RequestDataEvent(search: query));
     close(context, query);
   }
 
-  ///Since [showResults] is overridden we can don't have to build the results.
   @override
   Widget buildResults(BuildContext context) => null!;
 
   @override
   Widget buildSuggestions(BuildContext context) {
     return FutureBuilder<List<String>>(
+      // ignore: unnecessary_null_comparison
       future: onSearchChanged != null ? onSearchChanged(query) : null,
       builder: (context, snapshot) {
         if (snapshot.hasData) _oldFilters = snapshot.data!;
@@ -55,10 +56,17 @@ class SearchWithSuggestionDelegate extends SearchDelegate<String> {
           itemCount: _oldFilters.length,
           itemBuilder: (context, index) {
             return ListTile(
-              leading: Icon(Icons.restore),
-              title: Text("${_oldFilters[index]}"),
-              onTap: () => close(context, _oldFilters[index]),
-            );
+                leading: Icon(Icons.restore),
+                title: Text("${_oldFilters[index]}"),
+                // trailing: IconButton(
+                //     icon: Icon(Icons.delete),
+                //     onPressed: () => _oldFilters.remove(_oldFilters[index])),
+                onTap: () async {
+                  context
+                      .read<PaginationBloc<GetParkingInfo>>()
+                      .add(RequestDataEvent(search: _oldFilters[index]));
+                  close(context, _oldFilters[index]);
+                });
           },
         );
       },

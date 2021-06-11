@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking/api/parkingApi.dart';
-import 'package:parking/model/parkingModel/getParkingInfo.dart';
-import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
-import 'package:parking/page/homePage/screen/searchAppBar.dart';
 import 'package:parking/page/homePage/screen/searchBar.dart';
 import 'screen/parkingBody.dart';
 
@@ -23,14 +18,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PaginationBloc<GetParkingInfo>(
-        baseApi: ParkingApi(),
-      )..add(ResetEvent()),
-      child: Scaffold(
-        // appBar: SearchAppBar(context: context),
-        body: ParkingBody(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('서울 주차장검색'),
+        actions: [SearchBar()],
       ),
+      body: ParkingBody(),
     );
   }
 }

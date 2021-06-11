@@ -28,6 +28,9 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
 
   Stream<PaginationState<T>> requestDataEventHandle(String search) async* {
     yield LoadingState<T>(message: 'Loading ...');
+    if (search != '') {
+      await baseApi!.resetCache();
+    }
     final response = await baseApi!.requestData(search);
     if (response != null) {
       await baseApi!.updatePage();
