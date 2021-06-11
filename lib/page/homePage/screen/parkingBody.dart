@@ -45,7 +45,10 @@ class ParkingBody extends StatelessWidget {
                 .add(RequestDataEvent<GetParkingInfo>(search: ''));
           }
 
-          if (state is SuccessState<GetParkingInfo>) {}
+          if (state is ErrorState<GetParkingInfo>) {
+            Future.delayed(
+                Duration.zero, () => showMyDialog(context, '마지막입니다.'));
+          }
 
           return;
         },
@@ -63,10 +66,6 @@ class ParkingBody extends StatelessWidget {
               Future.delayed(
                   Duration.zero, () => showMyDialog(context, '결과없습니다.'));
             }
-            // if (ParkingApi().hasMore()) {
-            //   Future.delayed(
-            //       Duration.zero, () => showMyDialog(context, '결과없습니다.'));
-            // }
           }
 
           return RefreshIndicator(

@@ -7,7 +7,7 @@ import 'package:parking/page/homePage/bloc/pagenationBloc/paginationState.dart';
 class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
   BaseApi? baseApi;
   bool isFetching = false;
-
+  bool isFirstCall = true;
   PaginationBloc({required this.baseApi}) : super(PageInitState<T>());
 
   @override
@@ -30,6 +30,7 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
     yield LoadingState<T>(message: 'Loading ...');
 
     if (search != await baseApi!.getSearchKey()) {
+      isFirstCall = true;
       await baseApi!.resetCearchKeyWord(keyword: search);
       await baseApi!.resetCache();
       await baseApi!.resetPage();
@@ -37,27 +38,44 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
       print('相同');
     }
 
-    final response = await baseApi!.requestData();
+    if (isFirstCall) {
+      final response = await baseApi!.requestData();
 
-    if (response != null) {
-      var cacheData = await baseApi!.updateData(newData: response);
-      cacheData as GetParkingInfo;
+      if (response != null) {
+        var cacheData = await baseApi!.updateData(newData: response);
+        cacheData as GetParkingInfo;
 
+        yield SuccessState<T>(
+          data: cacheData as T,
+        );
+      } else {
+        yield ErrorState<T>(error: 'data is null');
+      }
+    } else {
       var hasmore = await baseApi!.hasMore();
 
       if (hasmore) {
         await baseApi!.updatePage();
+        final response = await baseApi!.requestData();
+
+        if (response != null) {
+          var cacheData = await baseApi!.updateData(newData: response);
+          cacheData as GetParkingInfo;
+
+          yield SuccessState<T>(
+            data: cacheData as T,
+          );
+        } else {
+          yield ErrorState<T>(error: 'data is null');
+        }
         print('hasMore');
       } else {
         print('no More');
         print('no More');
-        yield ErrorState<T>(error: 'data is null');
+        yield ErrorState<T>(error: 'last data');
       }
-      yield SuccessState<T>(
-        data: cacheData as T,
-      );
-    } else {
-      yield ErrorState<T>(error: 'data is null');
     }
+
+    isFirstCall = false;
   }
 }
