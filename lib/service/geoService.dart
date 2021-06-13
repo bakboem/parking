@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -9,7 +8,7 @@ class GoogleGeoService {
   static GoogleGeoService? _instance;
 
   GoogleGeoService._() {}
-
+  LocationPermission? permission;
   static GoogleGeoService _sharedInstance() {
     if (_instance == null) {
       _instance = GoogleGeoService._();
@@ -17,7 +16,19 @@ class GoogleGeoService {
     return _instance!;
   }
 
+  Future<void> checkPermisson() async {
+    bool enable = await Geolocator.isLocationServiceEnabled();
+    if (!enable) {
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        permission = await Geolocator.requestPermission();
+      }
+    }
+  }
+
   Future<Position> getLocation() async {
+    await checkPermisson();
     Position position = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.bestForNavigation)
         .catchError((e) {

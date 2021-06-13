@@ -18,7 +18,7 @@ class FilePollingService {
 
 //  ---------end singleton -------------
   watchDir(String dirPath) async {
-    var watcher = DirectoryWatcher(dirPath);
+    var watcher = DirectoryWatcher(dirPath, pollingDelay: Duration(days: 1));
     watcher.events.listen((event) async {
       print(event);
       File file = File(event.path);

@@ -76,10 +76,9 @@ class ParkingBody extends StatelessWidget {
         BlocConsumer<PaginationBloc<GetParkingInfo>,
             PaginationState<GetParkingInfo>>(
           listener: (context, state) {
+            var bloc = context.read<PaginationBloc<GetParkingInfo>>();
             if (state is PageInitState<GetParkingInfo>) {
-              context
-                  .read<PaginationBloc<GetParkingInfo>>()
-                  .add(RequestDataEvent<GetParkingInfo>(search: ''));
+              bloc.add(RequestDataEvent<GetParkingInfo>(search: ''));
             }
 
             if (state is ErrorState<GetParkingInfo>) {
@@ -90,11 +89,12 @@ class ParkingBody extends StatelessWidget {
             return;
           },
           builder: (context, state) {
+            var bloc = context.read<PaginationBloc<GetParkingInfo>>();
             if (state is PageInitState<GetParkingInfo> ||
                 state is LoadingState<GetParkingInfo> && parkingInfo == null) {
               return LoadingListPage();
             } else if (state is SuccessState<GetParkingInfo>) {
-              context.read<PaginationBloc<GetParkingInfo>>().isFetching = false;
+              bloc.isFetching = false;
               // ignore: unnecessary_null_comparison
               if (state.data != null) {
                 parkingInfo = state.data;
@@ -112,7 +112,6 @@ class ParkingBody extends StatelessWidget {
                     ..addListener(() {
                       var offset = _scrollController.offset;
                       var max = _scrollController.position.maxScrollExtent;
-                      var bloc = context.read<PaginationBloc<GetParkingInfo>>();
                       if (offset == max && !bloc.isFetching) {
                         var event = RequestDataEvent<GetParkingInfo>(
                             search: ParkingApi().searchKeyWords);
@@ -128,9 +127,7 @@ class ParkingBody extends StatelessWidget {
                   ),
                   itemCount: parkingInfo!.dataList!.length,
                 ),
-                onRefresh: () async => context
-                    .read<PaginationBloc<GetParkingInfo>>()
-                    .add(ResetEvent()));
+                onRefresh: () async => bloc.add(ResetEvent()));
           },
         ),
       ],

@@ -166,43 +166,4 @@ class CacheService {
   Future<void> deleteToken() async {
     await deleteDirectory('token');
   }
-
-  // ------------------ parking -------------------------
-  Future<String> getParkingPath() async {
-    String parkingFileName = 'parking.json';
-    String dirName = 'parking';
-    Directory tempDir = await getLocalDirectory();
-    String parkingPath = '${tempDir.path}/$dirName/$parkingFileName';
-    return parkingPath;
-  }
-
-  Future<String> getSearchPath(String searchKey) async {
-    String dirName = 'search';
-    Directory tempDir = await getLocalDirectory();
-    String searchPath =
-        '${tempDir.path}/$dirName/${searchKey.isEmpty ? 'search' : searchKey}.json';
-    return searchPath;
-  }
-
-  Future<GetParkingInfo> getParking() async {
-    File file = File(await getParkingPath());
-    if (await file.exists()) {
-      GetParkingInfo parkingInfo = GetParkingInfo.fromJson(
-          convert.jsonDecode(await file.readAsString()));
-      return parkingInfo;
-    } else {
-      return GetParkingInfo();
-    }
-  }
-
-  Future<Null> saveParking({required GetParkingInfo parkingInfo}) async {
-    await saveDataToFile(
-        parkingInfo.toJson(), await createFile(await getParkingPath()));
-  }
-
-  Future<Null> saveSearchParking(
-      {required GetParkingInfo parkingInfo, required String searchKey}) async {
-    await saveDataToFile(
-        parkingInfo.toJson(), await createFile(await getSearchPath(searchKey)));
-  }
 }

@@ -1,14 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking/api/paginationApi.dart';
+import 'package:parking/api/parkingApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/paginationEvent.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/paginationState.dart';
 
 class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
-  PaginationApi? pageApi;
   bool isFetching = false;
   bool isFirstCall = true;
-  PaginationBloc({required this.pageApi}) : super(PageInitState<T>());
+  PaginationBloc() : super(PageInitState<T>());
 
   @override
   Stream<PaginationState<T>> mapEventToState(PaginationEvent<T> event) async* {
@@ -24,8 +23,8 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
   }
 
   Stream<PaginationState<T>> resetEventHandle() async* {
-    await pageApi!.resetPage();
-    await pageApi!.resetCache();
+    await ParkingApi().resetPage();
+    await ParkingApi().resetCache();
     yield PageInitState<T>();
   }
 
@@ -36,11 +35,11 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
   Stream<PaginationState<T>> requestDataEventHandle(String search) async* {
     yield LoadingState<T>(message: 'Loading ...');
 
-    if (search != await pageApi!.getSearchKey()) {
+    if (search != await ParkingApi().getSearchKey()) {
       isFirstCall = true;
-      await pageApi!.resetCearchKeyWord(keyword: search);
-      await pageApi!.resetCache();
-      await pageApi!.resetPage();
+      await ParkingApi().resetCearchKeyWord(keyword: search);
+      await ParkingApi().resetCache();
+      await ParkingApi().resetPage();
 
       print('firestcall');
       print('firestcall');
@@ -50,7 +49,7 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
     }
 
     if (isFirstCall) {
-      final response = await pageApi!.requestData();
+      final response = await ParkingApi().requestData();
 
       if (response != null) {
         print('response!=nulll');
@@ -59,7 +58,7 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
         print('response!=nulll');
 
         print(response);
-        var cacheData = await pageApi!.updateData(newData: response);
+        var cacheData = await ParkingApi().updateData(newData: response);
         cacheData as GetParkingInfo;
 
         yield SuccessState<T>(
@@ -70,16 +69,14 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
       }
     } else {
       //openAPI 특정 맟춰
-      var hasmore = await pageApi!.hasMore();
+      var hasmore = await ParkingApi().hasMore();
 
       if (hasmore) {
-        await pageApi!.updatePage();
-        final response = await pageApi!.requestData();
+        await ParkingApi().updatePage();
+        final response = await ParkingApi().requestData();
 
         if (response != null) {
-          var cacheData = await pageApi!.updateData(newData: response);
-          cacheData as GetParkingInfo;
-
+          var cacheData = await ParkingApi().updateData(newData: response);
           yield SuccessState<T>(
             data: cacheData as T,
           );
