@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking/api/baseApi.dart';
+import 'package:parking/api/paginationApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/paginationEvent.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/paginationState.dart';
@@ -18,11 +18,18 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
     if (event is RequestDataEvent<T>) {
       yield* requestDataEventHandle(event.search!);
     }
+    if (event is AddPageEvent<T>) {
+      yield* addPageEventEventHandle();
+    }
   }
 
   Stream<PaginationState<T>> resetEventHandle() async* {
     await pageApi!.resetPage();
     await pageApi!.resetCache();
+    yield PageInitState<T>();
+  }
+
+  Stream<PaginationState<T>> addPageEventEventHandle() async* {
     yield PageInitState<T>();
   }
 

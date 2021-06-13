@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:parking/api/baseApi.dart';
+import 'package:parking/api/paginationApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import '../service/httpService.dart';
 
