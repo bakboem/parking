@@ -4,17 +4,6 @@ import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import '../service/httpService.dart';
 
 class ParkingApi extends PaginationApi {
-  // ---------- start singleton -------
-  factory ParkingApi() => _getInstance();
-  static ParkingApi? _instance;
-  static ParkingApi _getInstance() {
-    if (_instance == null) {
-      _instance = ParkingApi._();
-    }
-    return _instance!;
-  }
-
-  ParkingApi._();
 // ------------ end singleton ---------
   HttpService httpService = HttpService();
   // CacheService cacheService = CacheService();
@@ -37,21 +26,21 @@ class ParkingApi extends PaginationApi {
   String searchKeyWord = '';
   GetParkingInfo? cache;
   //지정 값만 넣어주면 data 호출.
-  Future<GetParkingInfo> requestdata() async {
-    GetParkingInfo? temp;
+  Future<Response> requestdata() async {
+    Response? response;
     try {
-      Response response = await httpService.getData(
+      response = await httpService.getData(
         url: '$parkingUrl/$startRange/$endRange/$searchKeyWord',
       );
-      if (response.data['GetParkInfo'] != null) {
-        temp = GetParkingInfo.fromJson(response.data['GetParkInfo']);
-      } else {
-        temp = GetParkingInfo(dataList: []);
-      }
+      // if (response.data['GetParkInfo'] != null) {
+      //   // temp = GetParkingInfo.fromJson(response.data['GetParkInfo']);
+      // } else {
+      //   // temp = GetParkingInfo(dataList: []);
+      // }
     } catch (e) {
       print(e);
     }
-    return temp!;
+    return response!;
   }
 
   get searchKeyWords => this.searchKeyWord;
@@ -70,17 +59,14 @@ class ParkingApi extends PaginationApi {
   }
 
   updatedata(newData) async {
-    newData as GetParkingInfo;
-    if (newData.dataList!.length != 0) {
+    GetParkingInfo data = GetParkingInfo.fromJson(newData);
+    if (data.dataList!.length != 0) {
       if (cache == null) {
-        cache = newData;
+        cache = data;
         print('====new data');
       } else {
-        cache!.dataList!.addAll(newData.dataList!);
-        cache!.total = newData.total;
+        cache!.dataList!.addAll(data.dataList!);
       }
-    } else {
-      cache = GetParkingInfo(total: 0, dataList: []);
     }
     return cache;
   }

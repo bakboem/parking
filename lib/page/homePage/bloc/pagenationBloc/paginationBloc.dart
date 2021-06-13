@@ -1,13 +1,15 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:parking/api/paginationApi.dart';
 import 'package:parking/api/parkingApi.dart';
-import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/paginationEvent.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/paginationState.dart';
 
 class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
   bool isFetching = false;
   bool isFirstCall = true;
-  PaginationBloc() : super(PageInitState<T>());
+  final PaginationApi? api;
+  PaginationBloc({required this.api}) : super(PageInitState<T>());
 
   @override
   Stream<PaginationState<T>> mapEventToState(PaginationEvent<T> event) async* {
@@ -49,7 +51,16 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
     }
 
     if (isFirstCall) {
-      final response = await ParkingApi().requestData();
+      final Response response = await ParkingApi().requestData();
+      if (response.statusCode == 200 &&
+          response.data['${T.runtimeType.toString()}'] != null) {
+        var cacheData = await ParkingApi().updateData(newData: response.data);
+        yield SuccessState<T>(
+          data: cacheData as T,
+        );
+      } else {
+        yield ErrorState<T>(error: 'data is null');
+      }
 
       if (response != null) {
         print('response!=nulll');
@@ -59,7 +70,6 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
 
         print(response);
         var cacheData = await ParkingApi().updateData(newData: response);
-        cacheData as GetParkingInfo;
 
         yield SuccessState<T>(
           data: cacheData as T,
@@ -77,6 +87,7 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
 
         if (response != null) {
           var cacheData = await ParkingApi().updateData(newData: response);
+
           yield SuccessState<T>(
             data: cacheData as T,
           );
