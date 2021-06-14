@@ -23,12 +23,18 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
     }
   }
 
+// reset 페이지 초기화.
+// reset cache 초기화.
+// initState 로 돌려 빈값 키워드로 서버통신.
   Stream<PaginationState<T>> resetEventHandle() async* {
     await api!.resetPage();
     await api!.resetCache();
     yield PageInitState<T>();
   }
 
+// 페이지 더 있는지 확인.
+// 더 있으면 success로 전환후 cache 파싱.
+// 더 없으면 success로 전환후 cache 파싱. 및 last 상태로 전환.
   Stream<PaginationState<T>> addPageEventEventHandle() async* {
     bool hasMore = await api!.hasMore();
     print(' hasMore ？？？？$hasMore');
@@ -42,6 +48,7 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
     }
   }
 
+//
   Stream<PaginationState<T>> requestDataEventHandle(String search) async* {
     yield LoadingState<T>(message: 'Loading ...');
     if (search != await api!.getSearchKey()) {

@@ -8,6 +8,7 @@ import 'package:parking/page/homePage/screen/searchBar.dart';
 import 'screen/parkingBody.dart';
 
 class HomePage extends StatelessWidget {
+  ScrollController scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GeoCodingBloc, GeoCodingState>(
@@ -34,11 +35,23 @@ class HomePage extends StatelessWidget {
             ),
             body: Stack(
               children: [
-                ParkingBody(),
+                ParkingBody(
+                  scrollController: scrollController,
+                ),
                 Positioned(
                     bottom: 30,
                     right: 30,
-                    child: Icon(Icons.arrow_circle_up_outlined))
+                    child: IconButton(
+                        onPressed: () {
+                          scrollController.animateTo(0,
+                              duration: Duration(microseconds: 600),
+                              curve: Curves.ease);
+                        },
+                        icon: Icon(
+                          Icons.arrow_circle_up_outlined,
+                          size: 40,
+                          color: Colors.teal,
+                        )))
               ],
             ),
           );

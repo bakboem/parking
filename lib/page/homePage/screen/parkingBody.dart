@@ -14,9 +14,9 @@ import 'package:parking/utile/textUtile.dart';
 
 // ignore: must_be_immutable
 class ParkingBody extends StatelessWidget {
-  ParkingBody();
+  ParkingBody({required this.scrollController});
   GetParkInfo? parkingInfo;
-  final ScrollController _scrollController = ScrollController();
+  late ScrollController scrollController;
 
   void showMyDialog(BuildContext context, String text) {
     showDialog<bool>(
@@ -37,10 +37,6 @@ class ParkingBody extends StatelessWidget {
         );
       },
     );
-  }
-
-  String subStr(String str) {
-    return str.substring(str.length - 2, str.length - 1);
   }
 
   Widget cardItem(BuildContext context, ParkingData data) {
@@ -95,23 +91,25 @@ class ParkingBody extends StatelessWidget {
         BlocConsumer<PaginationBloc<GetParkInfo>, PaginationState<GetParkInfo>>(
           listener: (context, state) {
             var bloc = context.read<PaginationBloc<GetParkInfo>>();
-
+            // init 상태시 빈 키워드로 request.
             if (state is PageInitState<GetParkInfo>) {
               bloc.add(RequestDataEvent<GetParkInfo>(search: ''));
             }
-
+            //오류알림.
             if (state is ErrorState<GetParkInfo>) {
               Future.delayed(
                   Duration.zero, () => showMyDialog(context, '검색결과 없음.'));
             }
+            // 마지막 페이지 알림.
             if (state is LastPageState<GetParkInfo>) {
               Future.delayed(
                   Duration.zero, () => showMyDialog(context, '마지막입니다.'));
             }
-
+            // page가 더 있으면 page++
             if (state is CheckHasMorePageState<GetParkInfo>) {
               bloc.add(AddPageEvent<GetParkInfo>());
             }
+            // success 시 state값 가져와 페이지에 넣기.
             if (state is SuccessState<GetParkInfo>) {
               bloc.isCallData = false;
               // ignore: unnecessary_null_comparison
@@ -123,6 +121,7 @@ class ParkingBody extends StatelessWidget {
           },
           builder: (context, state) {
             var bloc = context.read<PaginationBloc<GetParkInfo>>();
+            // 로딩 빈값 시 simer 보여주기.
             if (state is PageInitState<GetParkInfo> ||
                 state is LoadingState<GetParkInfo> && parkingInfo == null) {
               return LoadingListPage();
@@ -133,23 +132,26 @@ class ParkingBody extends StatelessWidget {
                   physics: Platform.isIOS
                       ? BouncingScrollPhysics()
                       : ClampingScrollPhysics(),
-                  controller: _scrollController
+                  controller: scrollController
                     ..addListener(() async {
-                      var offset = _scrollController.offset;
-                      var max = _scrollController.position.maxScrollExtent;
+                      var offset = scrollController.offset;
+                      var max = scrollController.position.maxScrollExtent;
+                      // scroll positon이  마지막일때
+                      // http 통신이 완료 했을때
+                      // 마지막 페이지가 이닐때.
                       if (offset == max &&
-                              !bloc.isCallData &&
-                              bloc.state != LastPageState<GetParkInfo>()
-                          // &&offset > screenHeight
-                          ) {
+                          !bloc.isCallData &&
+                          bloc.state != LastPageState<GetParkInfo>()) {
+                        // event에서 searchKey 값 가져와 서버통신 해준다.
                         bloc.isCallData = true;
                         bloc.add(RequestDataEvent<GetParkInfo>(
                             search: await bloc.api!.getSearchKey()));
                       }
                       if (bloc.isNewCache) {
-                        await _scrollController
-                            .animateTo(-500,
-                                duration: Duration(microseconds: 100),
+                        // 새로운 cache가 생성 되면 scrollController 를 맨 위로 올려준다.
+                        await scrollController
+                            .animateTo(0,
+                                duration: Duration(seconds: 1),
                                 curve: Curves.bounceIn)
                             .then((value) => bloc.isNewCache = false);
                       }
