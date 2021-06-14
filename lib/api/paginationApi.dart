@@ -6,6 +6,7 @@ abstract class PaginationApi {
   updateData({required dynamic newData}) async {}
   requestData() async {}
   resetCache() async {}
+  getCache() async {}
   resetCearchKeyWord({required String keyword}) async {}
   getSearchKey() async {}
 }

@@ -8,7 +8,7 @@ class PageInitState<T> extends PaginationState<T> {
   const PageInitState();
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 class LoadingState<T> extends PaginationState<T> {
@@ -19,7 +19,21 @@ class LoadingState<T> extends PaginationState<T> {
   });
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
+}
+
+class CheckHasMorePageState<T> extends PaginationState<T> {
+  const CheckHasMorePageState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class LastPageState<T> extends PaginationState<T> {
+  const LastPageState();
+
+  @override
+  List<Object?> get props => [];
 }
 
 class SuccessState<T> extends PaginationState<T> {
@@ -29,7 +43,7 @@ class SuccessState<T> extends PaginationState<T> {
   });
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 class ErrorState<T> extends PaginationState<T> {
@@ -40,5 +54,5 @@ class ErrorState<T> extends PaginationState<T> {
   });
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }

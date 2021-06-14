@@ -8,14 +8,14 @@ class ResetEvent<T> extends PaginationEvent<T> {
   const ResetEvent();
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 class AddPageEvent<T> extends PaginationEvent<T> {
   const AddPageEvent();
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 class RequestDataEvent<T> extends PaginationEvent<T> {
@@ -23,5 +23,5 @@ class RequestDataEvent<T> extends PaginationEvent<T> {
   RequestDataEvent({required this.search});
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }

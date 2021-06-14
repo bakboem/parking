@@ -8,5 +8,5 @@ class RequestAddrEvent extends GeoCodingEvent {
   const RequestAddrEvent();
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }

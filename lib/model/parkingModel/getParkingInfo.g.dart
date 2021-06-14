@@ -6,8 +6,8 @@ part of 'getParkingInfo.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-GetParkingInfo _$GetParkingInfoFromJson(Map<String, dynamic> json) {
-  return GetParkingInfo(
+GetParkInfo _$GetParkInfoFromJson(Map<String, dynamic> json) {
+  return GetParkInfo(
     dataList: (json['row'] as List<dynamic>?)
         ?.map((e) => ParkingData.fromJson(e as Map<String, dynamic>))
         .toList(),
@@ -18,7 +18,7 @@ GetParkingInfo _$GetParkingInfoFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$GetParkingInfoToJson(GetParkingInfo instance) =>
+Map<String, dynamic> _$GetParkInfoToJson(GetParkInfo instance) =>
     <String, dynamic>{
       'list_total_count': instance.total,
       'RESULT': instance.result,

@@ -29,9 +29,7 @@ class GoogleGeoService {
 
   Future<Position> getLocation() async {
     await checkPermisson();
-    Position position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.bestForNavigation)
-        .catchError((e) {
+    Position position = await Geolocator.getCurrentPosition().catchError((e) {
       throw Exception('GeoLocation location load fail');
     });
     return position;

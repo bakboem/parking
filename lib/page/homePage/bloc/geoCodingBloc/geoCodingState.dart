@@ -10,19 +10,19 @@ class SuccessState extends GeoCodingState {
   get address => addr;
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 class ErrorState extends GeoCodingState {
   const ErrorState();
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 class InitState extends GeoCodingState {
   const InitState();
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }

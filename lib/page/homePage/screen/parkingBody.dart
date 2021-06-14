@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking/api/parkingApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/model/parkingModel/parkingData.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
@@ -12,8 +11,7 @@ import 'package:parking/utile/textUtile.dart';
 // ignore: must_be_immutable
 class ParkingBody extends StatelessWidget {
   ParkingBody();
-  GetParkingInfo? parkingInfo;
-
+  GetParkInfo? parkingInfo;
   final ScrollController _scrollController = ScrollController();
 
   void showMyDialog(BuildContext context, String text) {
@@ -73,35 +71,32 @@ class ParkingBody extends StatelessWidget {
     TextUtile().parkingTypeParss('(ewrewrrewrew)');
     return Stack(
       children: [
-        BlocConsumer<PaginationBloc<GetParkingInfo>,
-            PaginationState<GetParkingInfo>>(
+        BlocConsumer<PaginationBloc<GetParkInfo>, PaginationState<GetParkInfo>>(
           listener: (context, state) {
-            var bloc = context.read<PaginationBloc<GetParkingInfo>>();
-            if (state is PageInitState<GetParkingInfo>) {
-              bloc.add(RequestDataEvent<GetParkingInfo>(search: ''));
+            var bloc = context.read<PaginationBloc<GetParkInfo>>();
+
+            if (state is PageInitState<GetParkInfo>) {
+              bloc.add(RequestDataEvent<GetParkInfo>(search: ''));
             }
 
-            if (state is ErrorState<GetParkingInfo>) {
+            if (state is ErrorState<GetParkInfo>) {
               Future.delayed(
-                  Duration.zero, () => showMyDialog(context, '마지막입니다.'));
+                  Duration.zero, () => showMyDialog(context, '검색결과 없음.'));
             }
-
+            if (state is CheckHasMorePageState<GetParkInfo>) {
+              bloc.add(AddPageEvent<GetParkInfo>());
+            }
             return;
           },
           builder: (context, state) {
-            var bloc = context.read<PaginationBloc<GetParkingInfo>>();
-            if (state is PageInitState<GetParkingInfo> ||
-                state is LoadingState<GetParkingInfo> && parkingInfo == null) {
+            var bloc = context.read<PaginationBloc<GetParkInfo>>();
+            if (state is PageInitState<GetParkInfo> ||
+                state is LoadingState<GetParkInfo> && parkingInfo == null) {
               return LoadingListPage();
-            } else if (state is SuccessState<GetParkingInfo>) {
-              bloc.isFetching = false;
+            } else if (state is SuccessState<GetParkInfo>) {
               // ignore: unnecessary_null_comparison
               if (state.data != null) {
                 parkingInfo = state.data;
-              }
-              if (parkingInfo!.dataList!.length == 0) {
-                Future.delayed(
-                    Duration.zero, () => showMyDialog(context, '결과없습니다.'));
               }
             }
 
@@ -109,13 +104,15 @@ class ParkingBody extends StatelessWidget {
                 child: ListView.separated(
                   physics: ClampingScrollPhysics(),
                   controller: _scrollController
-                    ..addListener(() {
+                    ..addListener(() async {
                       var offset = _scrollController.offset;
                       var max = _scrollController.position.maxScrollExtent;
-                      if (offset == max && !bloc.isFetching) {
-                        var event = RequestDataEvent<GetParkingInfo>(
-                            search: ParkingApi().searchKeyWords);
-                        bloc.isFetching = true;
+                      var screenHeight = MediaQuery.of(context).size.height;
+                      if (offset == max &&
+                          offset > screenHeight &&
+                          !(bloc.state is ErrorState<GetParkInfo>)) {
+                        var event = RequestDataEvent<GetParkInfo>(
+                            search: await bloc.api!.getSearchKey());
                         bloc.add(event);
                       }
                     }),

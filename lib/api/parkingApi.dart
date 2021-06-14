@@ -17,6 +17,7 @@ class ParkingApi extends PaginationApi {
 
   int? startRange;
   int? endRange;
+  int? a;
 
   ///
   ///
@@ -24,7 +25,7 @@ class ParkingApi extends PaginationApi {
   ///
   int? pageSize = 30;
   String searchKeyWord = '';
-  GetParkingInfo? cache;
+  GetParkInfo? cache;
   //지정 값만 넣어주면 data 호출.
   Future<Response> requestdata() async {
     Response? response;
@@ -32,11 +33,6 @@ class ParkingApi extends PaginationApi {
       response = await httpService.getData(
         url: '$parkingUrl/$startRange/$endRange/$searchKeyWord',
       );
-      // if (response.data['GetParkInfo'] != null) {
-      //   // temp = GetParkingInfo.fromJson(response.data['GetParkInfo']);
-      // } else {
-      //   // temp = GetParkingInfo(dataList: []);
-      // }
     } catch (e) {
       print(e);
     }
@@ -59,7 +55,8 @@ class ParkingApi extends PaginationApi {
   }
 
   updatedata(newData) async {
-    GetParkingInfo data = GetParkingInfo.fromJson(newData);
+    print('update data');
+    GetParkInfo data = GetParkInfo.fromJson(newData['GetParkInfo']);
     if (data.dataList!.length != 0) {
       if (cache == null) {
         cache = data;
@@ -68,19 +65,10 @@ class ParkingApi extends PaginationApi {
         cache!.dataList!.addAll(data.dataList!);
       }
     }
-    return cache;
   }
 
   hasmore() {
-    if (cache != null) {
-      print(' cache total ${cache!.total!}');
-      print(' cache total ${cache!.total!}');
-      print(' end total $endRange');
-      print(' end total $endRange');
-      return cache!.total! > endRange!;
-    } else {
-      return true;
-    }
+    return (cache!.total)! > endRange!;
   }
 
   resetCearchKeyword(String keyword) => this.searchKeyWord = keyword;
@@ -89,7 +77,7 @@ class ParkingApi extends PaginationApi {
   }
 
   resetpage() => initPage();
-
+  getcache() => this.cache;
   @override
   requestData() async {
     return await this.requestdata();
@@ -133,5 +121,10 @@ class ParkingApi extends PaginationApi {
   @override
   hasMore() {
     return this.hasmore();
+  }
+
+  @override
+  getCache() {
+    return this.getcache();
   }
 }

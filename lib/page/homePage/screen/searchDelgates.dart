@@ -37,7 +37,7 @@ class SearchWithHistoryDelegate extends SearchDelegate<String> {
   @override
   void showResults(BuildContext context) async {
     context
-        .read<PaginationBloc<GetParkingInfo>>()
+        .read<PaginationBloc<GetParkInfo>>()
         .add(RequestDataEvent(search: query));
     close(context, query);
   }
@@ -60,7 +60,7 @@ class SearchWithHistoryDelegate extends SearchDelegate<String> {
                 title: Text("${_oldFilters[index]}"),
                 onTap: () async {
                   context
-                      .read<PaginationBloc<GetParkingInfo>>()
+                      .read<PaginationBloc<GetParkInfo>>()
                       .add(RequestDataEvent(search: _oldFilters[index]));
                   close(context, _oldFilters[index]);
                 });
