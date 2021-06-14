@@ -44,11 +44,29 @@ class ParkingBody extends StatelessWidget {
       children: [
         Container(
           child: ListTile(
-            leading: Text(subStr(data.parkingName!)),
+            leading: Text(data.payYnName!),
             title: Center(
               child: ListTile(
-                title: Text('${data.parkingName}$index'),
-                subtitle: Text('${data.tel}'),
+                title: Text(TextUtile().parkingNameParss(data.parkingName!)),
+                subtitle: Column(
+                  children: [
+                    Text('${data.tel}'),
+                    Text('${data.operationRuleName}'),
+                    Text('주차가능면: ${data.capacity}면'),
+                    Text('야간개방여부: ${data.nightFreeOpenName}'),
+                    Text(
+                        '평일운영시간${data.weekDayBeginTime}~${data.weekDayEndTime}'),
+                    Text(
+                        '주말운영시간${data.weekEndBeginTime}~${data.weekEndEndTime}'),
+                    Text(
+                        '공휴일운영시간${data.holidayBeginTime}~${data.holidayEndTime}'),
+                    Text('최종데이터 동기화 시간:${data.syncTime}'),
+                    Text('월정액 금액:${data.fulltimeMonthly}'),
+                    Text('기본 주차 요금: ${data.ratest}'),
+                    Text(' ${data.timeRate!.toInt()}분당'),
+                    Text('분당 추가요금 ${data.addRates}'),
+                  ],
+                ),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -68,7 +86,6 @@ class ParkingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextUtile().parkingTypeParss('(ewrewrrewrew)');
     return Stack(
       children: [
         BlocConsumer<PaginationBloc<GetParkInfo>, PaginationState<GetParkInfo>>(
@@ -122,6 +139,12 @@ class ParkingBody extends StatelessWidget {
                         bloc.isCallData = true;
                         bloc.add(RequestDataEvent<GetParkInfo>(
                             search: await bloc.api!.getSearchKey()));
+                      }
+                      if (bloc.isNewCache) {
+                        await _scrollController.animateTo(0,
+                            duration: Duration(microseconds: 800),
+                            curve: Curves.bounceIn);
+                        bloc.isNewCache = false;
                       }
                     }),
                   itemBuilder: (context, index) =>

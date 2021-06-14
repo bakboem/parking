@@ -7,6 +7,7 @@ import 'package:parking/page/homePage/bloc/pagenationBloc/paginationState.dart';
 class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
   final PaginationApi? api;
   bool isCallData = false;
+  bool isNewCache = false;
   PaginationBloc({required this.api}) : super(PageInitState<T>());
 
   @override
@@ -44,6 +45,7 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
   Stream<PaginationState<T>> requestDataEventHandle(String search) async* {
     yield LoadingState<T>(message: 'Loading ...');
     if (search != await api!.getSearchKey()) {
+      isNewCache = true;
       print('change searchKey ===> $search');
       await api!.resetCearchKeyWord(keyword: search);
       await api!.resetCache();

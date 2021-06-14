@@ -1,14 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:parking/api/paginationApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
+import 'package:parking/model/parkingModel/parkingData.dart';
 import '../service/httpService.dart';
 
 class ParkingApi extends PaginationApi {
-// ------------ end singleton ---------
   HttpService httpService = HttpService();
-  // CacheService cacheService = CacheService();
-  // CacheObjectService cacheObjectService = CacheObjectService();
-
   static const baseUrl = 'http://openapi.seoul.go.kr:8088';
   static const apiKey = '54744f4462636e62353146794f4649';
   static const dataType = 'json';
@@ -17,12 +14,6 @@ class ParkingApi extends PaginationApi {
 
   int? startRange;
   int? endRange;
-  int? a;
-
-  ///
-  ///
-  ///
-  ///
   int? pageSize = 30;
   String searchKeyWord = '';
   GetParkInfo? cache;
@@ -57,7 +48,6 @@ class ParkingApi extends PaginationApi {
   updatedata(newData) async {
     print('update data');
     GetParkInfo data = GetParkInfo.fromJson(newData['GetParkInfo']);
-    print(data);
     if (data.dataList!.length != 0) {
       if (cache == null) {
         cache = data;
