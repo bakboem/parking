@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:parking/api/paginationApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
-import 'package:parking/model/parkingModel/parkingData.dart';
 import '../service/httpService.dart';
 
 class ParkingApi extends PaginationApi {

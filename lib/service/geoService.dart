@@ -7,7 +7,7 @@ class GoogleGeoService {
 
   static GoogleGeoService? _instance;
 
-  GoogleGeoService._() {}
+  GoogleGeoService._();
   LocationPermission? permission;
   static GoogleGeoService _sharedInstance() {
     if (_instance == null) {
@@ -16,6 +16,7 @@ class GoogleGeoService {
     return _instance!;
   }
 
+  Position? position;
   Future<void> checkPermisson() async {
     bool enable = await Geolocator.isLocationServiceEnabled();
     if (!enable) {
@@ -32,6 +33,7 @@ class GoogleGeoService {
     Position position = await Geolocator.getCurrentPosition().catchError((e) {
       throw Exception('GeoLocation location load fail');
     });
+    this.position = position;
     return position;
   }
 
@@ -56,11 +58,10 @@ class GoogleGeoService {
     return GeolocatorPlatform.instance.getPositionStream();
   }
 
-  Future<String> distance(double localLat, double localLon, double targetLat,
-      double targetLon) async {
-    double distanceInMeters = GeolocatorPlatform.instance
-        .distanceBetween(localLat, localLon, targetLat, targetLon);
+  distance(double targetLat, double targetLon) {
+    double distanceInMeters = GeolocatorPlatform.instance.distanceBetween(
+        position!.latitude, position!.longitude, targetLat, targetLon);
 
-    return (distanceInMeters / 1000).toStringAsFixed(1);
+    return (distanceInMeters / 1000).toStringAsFixed(1) + 'km';
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert' as convert;
 import 'dart:io';
-import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/model/tokenModel/token.dart';
 import 'package:parking/service/encryptionService.dart';
 import 'package:path_provider/path_provider.dart' as path;

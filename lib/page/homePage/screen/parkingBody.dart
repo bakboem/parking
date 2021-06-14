@@ -3,9 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/model/parkingModel/parkingData.dart';
+import 'package:parking/page/homePage/bloc/mapCameraBloc/exportMapCameraBloc.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
 import 'package:parking/page/homePage/screen/loadingScreen.dart';
 import 'package:parking/page/homePage/screen/parkingDetail.dart';
+import 'package:parking/service/geoService.dart';
 import 'package:parking/utile/textUtile.dart';
 
 // ignore: must_be_immutable
@@ -39,48 +41,49 @@ class ParkingBody extends StatelessWidget {
     return str.substring(str.length - 2, str.length - 1);
   }
 
-  Widget cardItem(BuildContext context, ParkingData data, int index) {
-    return Column(
-      children: [
-        Container(
-          child: ListTile(
-            leading: Text(data.payYnName!),
-            title: Center(
-              child: ListTile(
-                title: Text(TextUtile().parkingNameParss(data.parkingName!)),
-                subtitle: Column(
-                  children: [
-                    Text('${data.tel}'),
-                    Text('${data.operationRuleName}'),
-                    Text('주차가능면: ${data.capacity}면'),
-                    Text('야간개방여부: ${data.nightFreeOpenName}'),
-                    Text(
-                        '평일운영시간${data.weekDayBeginTime}~${data.weekDayEndTime}'),
-                    Text(
-                        '주말운영시간${data.weekEndBeginTime}~${data.weekEndEndTime}'),
-                    Text(
-                        '공휴일운영시간${data.holidayBeginTime}~${data.holidayEndTime}'),
-                    Text('최종데이터 동기화 시간:${data.syncTime}'),
-                    Text('월정액 금액:${data.fulltimeMonthly}'),
-                    Text('기본 주차 요금: ${data.ratest}'),
-                    Text(' ${data.timeRate!.toInt()}분당'),
-                    Text('분당 추가요금 ${data.addRates}'),
-                  ],
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ParkingDetail(
-                              parkingData: parkingInfo!.dataList![index],
-                            )),
-                  );
-                },
+  Widget cardItem(BuildContext context, ParkingData data) {
+    var dis = GoogleGeoService().distance(data.lat!, data.lng!);
+    return InkWell(
+      onTap: () {
+        print('data 传值！！ ${data.lat} ${data.lng}');
+        context
+            .read<MapCameraBloc>()
+            .add(InitCameraEvent(lat: data.lat, lon: data.lng));
+        Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+          return new ParkingDetail(parkingData: data);
+        }));
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+            child: Center(
+              child: Column(
+                children: [Text(data.payYnName!), Text('$dis')],
               ),
             ),
           ),
-        ),
-      ],
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(TextUtile().parkingNameParss(data.parkingName!)),
+              Text('${data.tel}'),
+              Text('${data.operationRuleName}'),
+              Text('주차가능면: ${data.capacity}면'),
+              Text('야간개방여부: ${data.nightFreeOpenName}'),
+              Text('평일운영시간${data.weekDayBeginTime}~${data.weekDayEndTime}'),
+              Text('주말운영시간${data.weekEndBeginTime}~${data.weekEndEndTime}'),
+              Text('공휴일운영시간${data.holidayBeginTime}~${data.holidayEndTime}'),
+              Text('최종데이터 동기화 시간:${data.syncTime}'),
+              Text('월정액 금액:${data.fulltimeMonthly}'),
+              Text('기본 주차 요금: ${data.ratest}'),
+              Text(' ${data.timeRate!.toInt()}분당'),
+              Text('분당 추가요금 ${data.addRates}'),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -148,7 +151,7 @@ class ParkingBody extends StatelessWidget {
                       }
                     }),
                   itemBuilder: (context, index) =>
-                      cardItem(context, parkingInfo!.dataList![index], index),
+                      cardItem(context, parkingInfo!.dataList![index]),
                   separatorBuilder: (context, index) => Divider(
                     height: 6,
                     color: Colors.teal,

@@ -43,6 +43,7 @@ class SearchWithHistoryDelegate extends SearchDelegate<String> {
   }
 
   @override
+  // ignore: null_check_always_fails
   Widget buildResults(BuildContext context) => null!;
 
   @override

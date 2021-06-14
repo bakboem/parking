@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking/api/parkingApi.dart';
 import 'package:parking/model/parkingModel/getParkingInfo.dart';
 import 'package:parking/page/homePage/bloc/geoCodingBloc/exportGeoCodingBloc.dart';
+import 'package:parking/page/homePage/bloc/mapCameraBloc/exportMapCameraBloc.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/paginationBloc.dart';
 import 'common/baseBlocObserver.dart';
@@ -19,7 +20,9 @@ void main() {
       BlocProvider<GeoCodingBloc>(
         create: (context) =>
             GeoCodingBloc(geoRepo: GeoRepo())..add(RequestAddrEvent()),
-      )
+      ),
+      BlocProvider<MapCameraBloc>(
+          create: (context) => MapCameraBloc(cameraRepo: MapCameraRepo())),
     ],
     child: MyApp(),
   ));
