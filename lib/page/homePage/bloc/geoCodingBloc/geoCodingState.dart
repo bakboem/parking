@@ -4,8 +4,8 @@ abstract class GeoCodingState extends Equatable {
   const GeoCodingState();
 }
 
-class SuccessState extends GeoCodingState {
-  const SuccessState({required this.addr});
+class CodingSuccessState extends GeoCodingState {
+  const CodingSuccessState({required this.addr});
   final String addr;
   get address => addr;
 

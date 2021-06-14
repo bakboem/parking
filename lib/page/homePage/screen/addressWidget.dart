@@ -10,7 +10,7 @@ class AddressWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GeoCodingBloc, GeoCodingState>(
       builder: (context, state) {
-        if (state is SuccessState) {
+        if (state is CodingSuccessState) {
           return Text('${state.addr}',
               style: TextStyle(color: Colors.white70, fontSize: 13));
         }

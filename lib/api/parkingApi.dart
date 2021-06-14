@@ -57,10 +57,11 @@ class ParkingApi extends PaginationApi {
   updatedata(newData) async {
     print('update data');
     GetParkInfo data = GetParkInfo.fromJson(newData['GetParkInfo']);
+    print(data);
     if (data.dataList!.length != 0) {
       if (cache == null) {
         cache = data;
-        print('====new data');
+        print('==== cache is new data');
       } else {
         cache!.dataList!.addAll(data.dataList!);
       }

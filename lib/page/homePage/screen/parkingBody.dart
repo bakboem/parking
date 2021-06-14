@@ -83,8 +83,20 @@ class ParkingBody extends StatelessWidget {
               Future.delayed(
                   Duration.zero, () => showMyDialog(context, '검색결과 없음.'));
             }
+            if (state is LastPageState<GetParkInfo>) {
+              Future.delayed(
+                  Duration.zero, () => showMyDialog(context, '마지막입니다.'));
+            }
+
             if (state is CheckHasMorePageState<GetParkInfo>) {
               bloc.add(AddPageEvent<GetParkInfo>());
+            }
+            if (state is SuccessState<GetParkInfo>) {
+              bloc.isCallData = false;
+              // ignore: unnecessary_null_comparison
+              if (state.data != null) {
+                parkingInfo = state.data;
+              }
             }
             return;
           },
@@ -93,11 +105,6 @@ class ParkingBody extends StatelessWidget {
             if (state is PageInitState<GetParkInfo> ||
                 state is LoadingState<GetParkInfo> && parkingInfo == null) {
               return LoadingListPage();
-            } else if (state is SuccessState<GetParkInfo>) {
-              // ignore: unnecessary_null_comparison
-              if (state.data != null) {
-                parkingInfo = state.data;
-              }
             }
 
             return RefreshIndicator(
@@ -107,13 +114,14 @@ class ParkingBody extends StatelessWidget {
                     ..addListener(() async {
                       var offset = _scrollController.offset;
                       var max = _scrollController.position.maxScrollExtent;
-                      var screenHeight = MediaQuery.of(context).size.height;
                       if (offset == max &&
-                          offset > screenHeight &&
-                          !(bloc.state is ErrorState<GetParkInfo>)) {
-                        var event = RequestDataEvent<GetParkInfo>(
-                            search: await bloc.api!.getSearchKey());
-                        bloc.add(event);
+                              !bloc.isCallData &&
+                              bloc.state != LastPageState<GetParkInfo>()
+                          // &&offset > screenHeight
+                          ) {
+                        bloc.isCallData = true;
+                        bloc.add(RequestDataEvent<GetParkInfo>(
+                            search: await bloc.api!.getSearchKey()));
                       }
                     }),
                   itemBuilder: (context, index) =>

@@ -13,13 +13,8 @@ class GeoCodingBloc extends Bloc<GeoCodingEvent, GeoCodingState> {
 
   Stream<GeoCodingState> requestAddrEventHandle() async* {
     var addr = await geoRepo.getAddr();
-    print('211111');
     if (addr != null) {
-      print('sbsbsb');
-      print('sbsbsb');
-      print('sbsbsb');
-      print('sbsbsb');
-      yield SuccessState(addr: addr);
+      yield CodingSuccessState(addr: addr);
     } else {
       yield ErrorState();
     }
