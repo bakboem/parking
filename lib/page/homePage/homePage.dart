@@ -2,24 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking/page/homePage/bloc/geoCodingBloc/exportGeoCodingBloc.dart';
-import 'package:parking/page/homePage/bloc/pagenationBloc/paginationState.dart';
 import 'package:parking/page/homePage/screen/addressWidget.dart';
 import 'package:parking/page/homePage/screen/loadingScreen.dart';
 import 'package:parking/page/homePage/screen/searchBar.dart';
 import 'screen/parkingBody.dart';
 
-class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GeoCodingBloc, GeoCodingState>(
@@ -44,7 +32,15 @@ class _HomePageState extends State<HomePage> {
               ),
               actions: [SearchBar()],
             ),
-            body: ParkingBody(),
+            body: Stack(
+              children: [
+                ParkingBody(),
+                Positioned(
+                    bottom: 30,
+                    right: 30,
+                    child: Icon(Icons.arrow_circle_up_outlined))
+              ],
+            ),
           );
         }
         return Scaffold(

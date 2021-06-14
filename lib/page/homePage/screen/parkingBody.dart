@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +45,7 @@ class ParkingBody extends StatelessWidget {
 
   Widget cardItem(BuildContext context, ParkingData data) {
     var dis = GoogleGeoService().distance(data.lat!, data.lng!);
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         context
             .read<MapCameraBloc>()
@@ -128,7 +130,9 @@ class ParkingBody extends StatelessWidget {
 
             return RefreshIndicator(
                 child: ListView.separated(
-                  physics: ClampingScrollPhysics(),
+                  physics: Platform.isIOS
+                      ? BouncingScrollPhysics()
+                      : ClampingScrollPhysics(),
                   controller: _scrollController
                     ..addListener(() async {
                       var offset = _scrollController.offset;
@@ -143,10 +147,11 @@ class ParkingBody extends StatelessWidget {
                             search: await bloc.api!.getSearchKey()));
                       }
                       if (bloc.isNewCache) {
-                        await _scrollController.animateTo(0,
-                            duration: Duration(microseconds: 800),
-                            curve: Curves.bounceIn);
-                        bloc.isNewCache = false;
+                        await _scrollController
+                            .animateTo(-500,
+                                duration: Duration(microseconds: 100),
+                                curve: Curves.bounceIn)
+                            .then((value) => bloc.isNewCache = false);
                       }
                     }),
                   itemBuilder: (context, index) =>
