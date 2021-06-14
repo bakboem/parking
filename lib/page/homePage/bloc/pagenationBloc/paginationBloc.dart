@@ -48,6 +48,7 @@ class PaginationBloc<T> extends Bloc<PaginationEvent<T>, PaginationState<T>> {
     }
   }
 
+// 공공 api 특정상 무조건 key가 있어야 검생됨. 때문에 event에 키값을 강제로 넣에 주기로 함.
 //
   Stream<PaginationState<T>> requestDataEventHandle(String search) async* {
     yield LoadingState<T>(message: 'Loading ...');
