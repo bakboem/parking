@@ -5,6 +5,5 @@ class MapCameraRepo {
   setCameraPosition(double lat, double lon) async {
     // ignore: unnecessary_statements
     this.cameraPosition = CameraPosition(target: LatLng(lat, lon), zoom: 17);
-    print('传值后的数据： ${cameraPosition!.target}');
   }
 }

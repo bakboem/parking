@@ -45,7 +45,6 @@ class ParkingBody extends StatelessWidget {
     var dis = GoogleGeoService().distance(data.lat!, data.lng!);
     return InkWell(
       onTap: () {
-        print('data 传值！！ ${data.lat} ${data.lng}');
         context
             .read<MapCameraBloc>()
             .add(InitCameraEvent(lat: data.lat, lon: data.lng));
@@ -59,7 +58,7 @@ class ParkingBody extends StatelessWidget {
           Container(
             child: Center(
               child: Column(
-                children: [Text(data.payYnName!), Text('$dis')],
+                children: [Text(data.payYnName!), Text('거리:$dis')],
               ),
             ),
           ),
