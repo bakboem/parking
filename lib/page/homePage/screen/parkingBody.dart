@@ -56,7 +56,26 @@ class ParkingBody extends StatelessWidget {
           Container(
             child: Center(
               child: Column(
-                children: [Text(data.payYnName!), Text('거리:$dis')],
+                children: [
+                  Text(
+                    data.payYnName!,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '거리:',
+                      ),
+                      Text(
+                        '$dis',
+                        style: TextStyle(color: Colors.amber, fontSize: 14),
+                      ),
+                      Text(
+                        'km',
+                      ),
+                    ],
+                  )
+                ],
               ),
             ),
           ),
@@ -64,19 +83,23 @@ class ParkingBody extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(TextUtile().parkingNameParss(data.parkingName!)),
-              Text('${data.tel}'),
+              Text(
+                TextUtile().parkingNameParss(data.parkingName!),
+                style: TextStyle(color: Colors.teal, fontSize: 16),
+              ),
+              Text('전화:${data.tel}'),
               Text('${data.operationRuleName}'),
-              Text('주차가능면: ${data.capacity}면'),
+              Text('주차가능면: ${data.capacity!.toInt()}면'),
               Text('야간개방여부: ${data.nightFreeOpenName}'),
               Text('평일운영시간${data.weekDayBeginTime}~${data.weekDayEndTime}'),
               Text('주말운영시간${data.weekEndBeginTime}~${data.weekEndEndTime}'),
               Text('공휴일운영시간${data.holidayBeginTime}~${data.holidayEndTime}'),
-              Text('최종데이터 동기화 시간:${data.syncTime}'),
+              Text(
+                  '동기화 시간: ${TextUtile().parkingSyncTimeParss(data.syncTime!)}'),
               Text('월정액 금액:${data.fulltimeMonthly}'),
-              Text('기본 주차 요금: ${data.ratest}'),
-              Text(' ${data.timeRate!.toInt()}분당'),
-              Text('분당 추가요금 ${data.addRates}'),
+              Text('기본 주차 요금: ${data.ratest!.toInt()}원'),
+              Text('${data.timeRate!.toInt()}분당'),
+              Text('분당 추가요금 ${data.addRates!.toInt()}원'),
             ],
           ),
         ],

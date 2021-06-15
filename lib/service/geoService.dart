@@ -62,6 +62,6 @@ class GoogleGeoService {
     double distanceInMeters = GeolocatorPlatform.instance.distanceBetween(
         position!.latitude, position!.longitude, targetLat, targetLon);
 
-    return (distanceInMeters / 1000).toStringAsFixed(1) + 'km';
+    return (distanceInMeters / 1000).toStringAsFixed(1);
   }
 }

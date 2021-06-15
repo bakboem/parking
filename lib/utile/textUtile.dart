@@ -3,6 +3,7 @@ class TextUtile {
   static RegExp leftBrackets = RegExp(r'(\(+)');
   static RegExp rightBrackets = RegExp(r'(\)+)');
   static RegExp publicType = RegExp(r'(공유\)+)');
+  static RegExp darsh = RegExp(r'(\-|:|\s)');
   isMatch(String str, RegExp regExp) => regExp.hasMatch(str);
   String cutStr(String string, int start, int end) {
     return string.substring(start, end);
@@ -34,5 +35,9 @@ class TextUtile {
       int end = name.lastIndexOf(leftBrackets);
       return cutStr(name, start, end);
     }
+  }
+
+  String parkingSyncTimeParss(String time) {
+    return time.replaceAll(darsh, '');
   }
 }
