@@ -7,7 +7,6 @@ import 'package:parking/page/homePage/bloc/mapCameraBloc/exportMapCameraBloc.dar
 // ignore: must_be_immutable
 class ParkingMap extends StatelessWidget {
   Completer<GoogleMapController> _controller = Completer();
-  CameraPosition? cameraPosition;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,13 +14,7 @@ class ParkingMap extends StatelessWidget {
         width: 300,
         child: BlocConsumer<MapCameraBloc, MapCameraState>(
           listener: (context, state) {
-            if (state is InitSuccessState) {
-              cameraPosition = state.cameraPosition;
-              print('caonima!#!@#@!${state.cameraPosition.target}');
-              print('caonima!#!@#@!${state.cameraPosition.target}');
-              print('caonima!#!@#@!${state.cameraPosition.target}');
-              print('caonima!#!@#@!${state.cameraPosition.target}');
-            }
+            if (state is InitSuccessState) {}
           },
           builder: (context, state) {
             if (state is InitSuccessState) {

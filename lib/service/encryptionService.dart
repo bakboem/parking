@@ -7,7 +7,9 @@ class EncryptionService {
     int kl = encryptionKey.length - 1;
     for (var i = 0; i < charCount; i++) {
       int other = data[i].codeUnits[0] ^ encryptionKey[kp].codeUnitAt(0);
-      print(other);
+      print('other !!!~ $other');
+      print('code Units :${data[i].codeUnits[0]}');
+      print('encryptionKey codeUniAt:${encryptionKey[kp].codeUnitAt(0)}');
       encrypted.insert(i, other);
       kp = (kp < kl) ? (++kp) : (0);
     }

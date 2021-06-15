@@ -6,6 +6,7 @@ import 'package:parking/page/homePage/bloc/geoCodingBloc/exportGeoCodingBloc.dar
 import 'package:parking/page/homePage/bloc/mapCameraBloc/exportMapCameraBloc.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/exportPaginationBloc.dart';
 import 'package:parking/page/homePage/bloc/pagenationBloc/paginationBloc.dart';
+import 'package:parking/service/encryptionService.dart';
 import 'common/baseBlocObserver.dart';
 import 'page/homePage/homePage.dart';
 
@@ -31,6 +32,11 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var a = EncryptionService().encrypt('fan');
+    print(a);
+    print(a);
+    print(a);
+    print(a);
     return MaterialApp(
         theme: ThemeData(primaryColor: Colors.teal),
         title: 'Material App',
