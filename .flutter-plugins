@@ -1,0 +1,17 @@
+# This is a generated file; do not edit or check into version control.
+background_fetch=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/background_fetch-1.0.0/
+flutter_plugin_android_lifecycle=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.2/
+geocoding=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/geocoding-2.0.0/
+geolocator=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/geolocator-7.0.3/
+geolocator_web=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/geolocator_web-2.0.3/
+google_maps_flutter=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-2.0.6/
+path_provider=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.2/
+path_provider_linux=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.0.0/
+path_provider_macos=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.0/
+path_provider_windows=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.1/
+shared_preferences=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.6/
+shared_preferences_linux=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-2.0.0/
+shared_preferences_macos=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_macos-2.0.0/
+shared_preferences_web=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-2.0.0/
+shared_preferences_windows=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.0.0/
+sqflite=/Users/bakbeom/install/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-2.0.0+3/

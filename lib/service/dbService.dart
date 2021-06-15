@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:parking/utile/textUtile.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -34,22 +32,56 @@ class DbService {
     return db;
   }
 
+  test() {
+    RegExp text = RegExp(r'(77\B)'); //包含77
+    RegExp text1 = RegExp(r'^(77)'); //以 77开头
+    RegExp text2 = RegExp(
+        r'(77\B$)'); //以 77结尾  这个公式不合理的地方在于， \B是非单词边界，' a77r ok ' 而$必须要求在末尾。
+
+    // 结果，把不等于 77 的全部转换成 ok 。
+    var result = text.hasMatch('77aR');
+    var result2 = text1.hasMatch('7aR');
+    var result3 = text2.hasMatch(' 77');
+
+    print('######$result');
+    print('######$result2');
+    print('######$result3');
+  }
+
   Future<String> makeSql(Map<String, dynamic> tableMap) async {
-    RegExp primaryKey = RegExp(r'primary|');
-    RegExp table = RegExp(r'table');
-    RegExp column = RegExp(r'column');
-    StringBuffer sql = StringBuffer();
+    RegExp primaryKey = RegExp(r'Primary');
+    RegExp table = RegExp(r'Table');
+    RegExp textColumn = RegExp(r'[^77]');
+
+    StringBuffer strBuff = StringBuffer();
     tableMap.forEach((key, value) {
-      if (textUtile.isMatch(key, table))
-        sql.writeAll({'create', 'table', '$value', '('}, ' ');
-      if (textUtile.isMatch(key, primaryKey))
-        sql.writeAll(
-            {'$value', 'integer', 'primary', 'key', 'autoincrement,'}, ' ');
-      if (textUtile.isMatch(key, column))
-        sql.writeAll(
-            {'$value', 'integer', 'primary', 'key', 'autoincrement,'}, ' ');
+      bool last = tableMap.keys.last == key;
+
+      // if (textUtile.isMatch(key, table))
+      //   strBuff.writeAll({'create', 'table', '$value', '('}, ' ');
+      // if (textUtile.isMatch(key, primaryKey))
+      //   strBuff.writeAll({
+      //     '$value',
+      //     'integer',
+      //     'primary',
+      //     'key',
+      //     last ? 'autoincrement)' : 'autoincrement,'
+      //   }, ' ');
+
+      // if (textUtile.isMatch(key, intColumnNotNull)) {
+      //   strBuff.writeAll(
+      //       {'$value', 'integer', last ? 'not null)' : 'not null,'}, ' ');
+      // }
+
+      if (textUtile.isMatch(key, textColumn)) {
+        strBuff.writeAll(
+            {'$value', 'text', last ? 'not null)' : 'not null,'}, ' ');
+      }
     });
-    return '';
+    var sql = '''${strBuff.toString()}''';
+    print(sql);
+    print(sql);
+    return sql;
   }
 
   Future<bool> deleteDB(String dbName) async =>
