@@ -35,15 +35,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     var a = EncryptionService().encrypt('fan');
     print(a);
-    var db = DbService().makeSql({
+    var sql = DbService().makeSql({
       'Table': 'Tb',
       'PrimaryKey': 'userid',
-      'TextColumnNotNull': 'name',
-      'IntColumn': 'age',
-      'TextColumnrow': 'Row'
+      'ColumnTextNotNull': 'name',
+      'ColumnInt': 'age',
+      'ColumnText': 'row'
     });
-    print(db);
-    DbService().test();
+    DbService().createDB('test', sql);
     return MaterialApp(
         theme: ThemeData(primaryColor: Colors.teal),
         title: 'Material App',
